@@ -1,6 +1,7 @@
 package com.wafflestudio.seminar.domain.survey.model
 
 import com.wafflestudio.seminar.domain.os.model.OperatingSystem
+import com.wafflestudio.seminar.domain.user.model.User
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.Max
@@ -19,6 +20,14 @@ class SurveyResponse(
     @JoinColumn(name = "os_id", referencedColumnName = "id")
     @NotNull
     var os: OperatingSystem? = null,
+
+    // user 추가한 부분
+    // SurveyResponse 엔티티의 영속성 전이가 이루어질 때 user 엔티티의 영속성 전이도 같이 이루어집니다
+    // (둘 다 데이터베이스에 저장된다)
+    // user row 가 삭제되어도 영향 x
+    @OneToOne(cascade = [CascadeType.PERSIST])
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    var user: User? = null,
 
     @Column(name = "spring_exp")
     @NotNull
