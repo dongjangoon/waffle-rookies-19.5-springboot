@@ -25,4 +25,8 @@ class SurveyResponseService(
     fun getSurveyResponseById(id: Long): SurveyResponse? {
         return surveyResponseRepository.findByIdOrNull(id) ?: throw SurveyNotFoundException()
     }
+
+    fun saveSurveyResponse(surveyResponse: SurveyResponse): SurveyResponse? {
+        return surveyResponseRepository.save(surveyResponse)
+    }
 }
