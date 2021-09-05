@@ -19,4 +19,11 @@ class OperatingSystemService(
     fun getOperatingSystemById(id: Long): OperatingSystem {
         return operatingSystemRepository.findByIdOrNull(id) ?: throw OsNotFoundException()
     }
+
+    /**
+     * 설문조사를 추가할 때 쓰이고 request 로 받은 os 가 존재하지 않으면 OsNotFoundException 을 발생시킵니다.
+     */
+    fun getOperatingSystemByName(name: String): OperatingSystem {
+        return operatingSystemRepository.findByNameEquals(name) ?: throw OsNotFoundException()
+    }
 }
