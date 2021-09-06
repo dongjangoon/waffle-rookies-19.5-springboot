@@ -50,6 +50,7 @@ class SurveyResponseController(
     /**
      * request 와 modelMapper 로 만든 SurveyResponse 엔티티에 os, user 를 전해주었습니다.
      * 서비스 단에서 영속화한 뒤, 반환된 surveyResponse 를 responseBody 로 전달했습니다.
+     * 다만 SurveyResponse 에 os, user 를 setter 방식으로 전달하는 것이 조금 어색한 듯 합니다.
      */
     @PostMapping("/")
     fun addSurveyResponse(
@@ -61,6 +62,8 @@ class SurveyResponseController(
             val os = operatingSystemService.getOperatingSystemByName(body.os)
             val user = userService.getUserById(userId)
             val newSurveyResponse = modelMapper.map(body, SurveyResponse::class.java)
+
+            // 이 두 줄이 조금 어색한듯?
             newSurveyResponse.os = os
             newSurveyResponse.user = user
 
