@@ -61,11 +61,10 @@ class SurveyResponseController(
         return try {
             val os = operatingSystemService.getOperatingSystemByName(body.os)
             val user = userService.getUserById(userId)
-            val newSurveyResponse = modelMapper.map(body, SurveyResponse::class.java)
-
-            // 이 두 줄이 조금 어색한듯?
-            newSurveyResponse.os = os
-            newSurveyResponse.user = user
+            val newSurveyResponse = modelMapper.map(body, SurveyResponse::class.java).apply {
+                this.os = os
+                this.user = user
+            }
 
             val surveyResponse = surveyResponseService.saveSurveyResponse(newSurveyResponse)
             val responseBody = modelMapper.map(surveyResponse, SurveyResponseDto.Response::class.java)
