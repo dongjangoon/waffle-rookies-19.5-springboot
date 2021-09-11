@@ -22,7 +22,7 @@ class UserController(
      */
     @PostMapping("/")
     fun addUser(
-        @ModelAttribute @Valid body: UserDto.CreateRequest
+        @RequestBody @Valid body: UserDto.CreateRequest
     ): UserDto.Response {
         val newUser = modelMapper.map(body, User::class.java)
         return modelMapper.map(userService.saveUser(newUser), UserDto.Response::class.java)
