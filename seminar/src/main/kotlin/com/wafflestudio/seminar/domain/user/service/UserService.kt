@@ -1,6 +1,7 @@
 package com.wafflestudio.seminar.domain.user.service
 
 import com.wafflestudio.seminar.domain.user.dto.UserDto
+import com.wafflestudio.seminar.domain.user.exception.EmailAlreadyExistException
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.domain.user.repository.UserRepository
@@ -17,6 +18,10 @@ class UserService(
      * user 를 여기서 반환
      */
     fun saveUser(user: User): User? {
+        if (userRepository.findEmailList()?.contains(user.email) == true) {
+            throw EmailAlreadyExistException()
+        }
+
         return userRepository.save(user)
     }
 

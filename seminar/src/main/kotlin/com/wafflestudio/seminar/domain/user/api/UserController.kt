@@ -1,6 +1,7 @@
 package com.wafflestudio.seminar.domain.user.api
 
 import com.wafflestudio.seminar.domain.user.dto.UserDto
+import com.wafflestudio.seminar.domain.user.exception.EmailAlreadyExistException
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.domain.user.service.UserService
@@ -23,9 +24,14 @@ class UserController(
     @PostMapping("/")
     fun addUser(
         @RequestBody @Valid body: UserDto.CreateRequest
-    ): UserDto.Response {
-        val newUser = modelMapper.map(body, User::class.java)
-        return modelMapper.map(userService.saveUser(newUser), UserDto.Response::class.java)
+    ): ResponseEntity<UserDto.Response> {
+        return try {
+            val newUser = modelMapper.map(body, User::class.java)
+            val responseBody = modelMapper.map(userService.saveUser(newUser), UserDto.Response::class.java)
+            ResponseEntity.ok(responseBody)
+        } catch (e: EmailAlreadyExistException) {
+            ResponseEntity.badRequest().build()
+        }
     }
 
     /**
