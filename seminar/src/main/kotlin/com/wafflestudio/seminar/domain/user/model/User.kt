@@ -17,10 +17,10 @@ class User (
 
     @NotNull
     @NotBlank
-    var name: String? = null,
+    var name: String = "",
 
     @NotNull
     @NotBlank
     @Email
-    var email: String? = null,
+    var email: String = "",
 )
