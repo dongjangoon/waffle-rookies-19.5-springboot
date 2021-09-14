@@ -37,22 +37,26 @@ class SurveyResponseDto {
         var os: String = "",
 
         @field:NotNull
-        @Min(0, message = "The value must be between 1 and 5")
-        @Max(5, message = "The value must be between 1 and 5")
+        @field:Min(1, message = "The value must be between 1 and 5")
+        @field:Max(5, message = "The value must be between 1 and 5")
         var springExp: Int = 0,
 
         @field:NotNull
-        @Min(0, message = "The value must be between 1 and 5")
-        @Max(5, message = "The value must be between 1 and 5")
+        @field:Min(1, message = "The value must be between 1 and 5")
+        @field:Max(5, message = "The value must be between 1 and 5")
         var rdbExp: Int = 0,
 
         @field:NotNull
-        @Min(0, message = "The value must be between 1 and 5")
-        @Max(5, message = "The value must be between 1 and 5")
+        @field:Min(1, message = "The value must be between 1 and 5")
+        @field:Max(5, message = "The value must be between 1 and 5")
         var programmingExp: Int = 0,
 
+        @field:NotBlank
         var major: String? = "",
+
+        @field:NotBlank
         var grade: String? = "",
+
         var backendReason: String? = "",
         var waffleReason: String? = "",
         var somethingToSay: String? = "",

@@ -2,6 +2,7 @@ package com.wafflestudio.seminar.domain.user.dto
 
 import com.sun.istack.NotNull
 import com.wafflestudio.seminar.domain.user.model.User
+import javax.persistence.Column
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
