@@ -1,11 +1,13 @@
 package com.wafflestudio.seminar.domain.user.api
 
 import com.wafflestudio.seminar.domain.user.dto.UserDto
-import com.wafflestudio.seminar.domain.user.exception.EmailAlreadyExistException
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.User
+import com.wafflestudio.seminar.domain.user.repository.UserRepository
 import com.wafflestudio.seminar.domain.user.service.UserService
 import org.modelmapper.ModelMapper
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -14,11 +16,12 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/user/")
 class UserController(
     private val userService: UserService,
+    private val userRepository: UserRepository,
     private val modelMapper: ModelMapper
 ) {
     /**
      * 들어오는 request body 를 받아 UserDto.CreateRequest 로 변환하고
-     * service layer 로 넘겨주고 반환되는 user 를 modelMapper 를 이용해서
+     * DB layer 로 넘겨주고 반환되는 user 를 modelMapper 를 이용해서
      * response 로 변환한 후 반환해줍니다.
      */
     @PostMapping("/")
@@ -27,10 +30,10 @@ class UserController(
     ): ResponseEntity<UserDto.Response> {
         return try {
             val newUser = modelMapper.map(body, User::class.java)
-            val responseBody = modelMapper.map(userService.saveUser(newUser), UserDto.Response::class.java)
+            val responseBody = modelMapper.map(userRepository.save(newUser), UserDto.Response::class.java)
             ResponseEntity.ok(responseBody)
-        } catch (e: EmailAlreadyExistException) {
-            ResponseEntity.badRequest().build()
+        } catch (e: DataIntegrityViolationException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
         }
     }
 
