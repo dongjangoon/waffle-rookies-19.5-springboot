@@ -7,7 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 //Spring Data Jpa
 interface SurveyResponseRepository : JpaRepository<SurveyResponse, Long?> {
     fun findAllByOs(os: OperatingSystem): List<SurveyResponse>
-
-    fun findAllByBackendReasonContaining(str: String): List<SurveyResponse>
-
 }

@@ -1,4 +1,4 @@
-package com.wafflestudio.seminar.config
+package com.wafflestudio.seminar.global.config
 
 import org.modelmapper.ModelMapper
 import org.springframework.context.annotation.Bean

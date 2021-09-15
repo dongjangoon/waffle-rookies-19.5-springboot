@@ -25,6 +25,7 @@ class DataLoader(
         val macos =
             OperatingSystem(name = "MacOS", price = 300000, description = "Most favorite OS of Seminar Instructors")
         val linux = OperatingSystem(name = "Linux", price = 0, description = "Linus Benedict Torvalds")
+        val others = OperatingSystem(name = "Others", price = 0, description = "")
         operatingSystemRepository.save(windows)
         operatingSystemRepository.save(macos)
         operatingSystemRepository.save(linux)
@@ -34,12 +35,13 @@ class DataLoader(
                 val rawSurveyResponse = it.split("\t")
                 val newSurveyResponse = SurveyResponse(
                     timestamp = LocalDateTime.parse(rawSurveyResponse[0], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                    os = operatingSystemRepository.findByNameEquals(rawSurveyResponse[1]),
+                    os = operatingSystemRepository.findByNameEquals(rawSurveyResponse[1]) ?: others,
                     springExp = rawSurveyResponse[2].toInt(),
                     rdbExp = rawSurveyResponse[3].toInt(),
                     programmingExp = rawSurveyResponse[4].toInt(),
                     major = rawSurveyResponse[5],
-                    grade = rawSurveyResponse[6]
+                    grade = rawSurveyResponse[6],
+                    user = null,
                 )
                 surveyResponseRepository.save(newSurveyResponse)
             }
