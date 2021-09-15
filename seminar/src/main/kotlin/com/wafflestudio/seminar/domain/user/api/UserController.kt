@@ -1,54 +1,24 @@
 package com.wafflestudio.seminar.domain.user.api
 
+import com.wafflestudio.seminar.domain.user.UserService
 import com.wafflestudio.seminar.domain.user.dto.UserDto
-import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
-import com.wafflestudio.seminar.domain.user.model.User
-import com.wafflestudio.seminar.domain.user.repository.UserRepository
-import com.wafflestudio.seminar.domain.user.service.UserService
-import org.modelmapper.ModelMapper
-import org.springframework.dao.DataIntegrityViolationException
+import com.wafflestudio.seminar.global.auth.JwtTokenProvider
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/api/v1/user/")
+@RequestMapping("/api/v1/users")
 class UserController(
     private val userService: UserService,
-    private val userRepository: UserRepository,
-    private val modelMapper: ModelMapper
+    private val jwtTokenProvider: JwtTokenProvider
 ) {
-    /**
-     * 들어오는 request body 를 받아 UserDto.CreateRequest 로 변환하고
-     * DB layer 로 넘겨주고 반환되는 user 를 modelMapper 를 이용해서
-     * response 로 변환한 후 반환해줍니다.
-     */
     @PostMapping("/")
-    fun addUser(
-        @RequestBody @Valid body: UserDto.CreateRequest
-    ): ResponseEntity<UserDto.Response> {
-        return try {
-            val newUser = modelMapper.map(body, User::class.java)
-            val responseBody = modelMapper.map(userRepository.save(newUser), UserDto.Response::class.java)
-            ResponseEntity.ok(responseBody)
-        } catch (e: DataIntegrityViolationException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).build()
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun signup(@RequestBody @Valid signupRequest: UserDto.SignupRequest, response: HttpServletResponse): UserDto.Response {
+        val user = userService.signup(signupRequest)
+        response.addHeader("Authentication", jwtTokenProvider.generateToken(user.email))
+        return UserDto.Response(user)
     }
-
-    /**
-     * 서비스 단에서 넘겨준 user 로 responseBody 구성, null 이면 에러 발생
-     */
-    @GetMapping("me/")
-    fun getSelfInfo(@RequestHeader("User-Id") id: Long): ResponseEntity<UserDto.Response> {
-        return try {
-            val user = userService.getUserById(id)
-            val responseBody = modelMapper.map(user, UserDto.Response::class.java)
-            ResponseEntity.ok(responseBody)
-        } catch (e: UserNotFoundException) {
-            ResponseEntity.notFound().build()
-        }
-    }
-
 }

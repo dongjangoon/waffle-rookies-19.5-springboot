@@ -2,69 +2,68 @@ package com.wafflestudio.seminar.domain.survey.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.wafflestudio.seminar.domain.os.dto.OperatingSystemDto
+import com.wafflestudio.seminar.domain.os.exception.OsNotFoundException
 import com.wafflestudio.seminar.domain.os.model.OperatingSystem
-import com.wafflestudio.seminar.domain.user.model.User
+import com.wafflestudio.seminar.domain.survey.model.SurveyResponse
+import com.wafflestudio.seminar.domain.user.User
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.persistence.Column
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 class SurveyResponseDto {
     data class Response(
-        var id: Long? = 0,
-        var os: OperatingSystem? = null,
-        var user: User? = null,
-        var springExp: Int = 0,
-        var rdbExp: Int = 0,
-        var programmingExp: Int = 0,
-        var major: String? = "",
-        var grade: String? = "",
-        var backendReason: String? = "",
-        var waffleReason: String? = "",
-        var somethingToSay: String? = "",
-        var timestamp: LocalDateTime? = null
+        val id: Long,
+        val os: OperatingSystemDto.Response,
+        val springExp: Int,
+        val rdbExp: Int,
+        val programmingExp: Int,
+        val major: String,
+        val grade: String,
+        val backendReason: String?,
+        val waffleReason: String?,
+        val somethingToSay: String?,
+        val timestamp: LocalDateTime
+    ) {
+        constructor(surveyResponse: SurveyResponse) : this(
+            surveyResponse.id,
+            OperatingSystemDto.Response(surveyResponse.os),
+            surveyResponse.springExp,
+            surveyResponse.rdbExp,
+            surveyResponse.programmingExp,
+            surveyResponse.major,
+            surveyResponse.grade,
+            surveyResponse.backendReason,
+            surveyResponse.waffleReason,
+            surveyResponse.somethingToSay,
+            surveyResponse.timestamp
+        )
+    }
 
-    )
-
-    // TODO: 아래 두 DTO 완성
     data class CreateRequest(
-        @field:NotNull
         @field:NotBlank
-        var os: String = "",
+        val os: String,
 
         @field:NotNull
-        @field:Min(1, message = "The value must be between 1 and 5")
-        @field:Max(5, message = "The value must be between 1 and 5")
-        var springExp: Int = 0,
+        val springExp: Int,
 
         @field:NotNull
-        @field:Min(1, message = "The value must be between 1 and 5")
-        @field:Max(5, message = "The value must be between 1 and 5")
-        var rdbExp: Int = 0,
+        val rdbExp: Int,
 
         @field:NotNull
-        @field:Min(1, message = "The value must be between 1 and 5")
-        @field:Max(5, message = "The value must be between 1 and 5")
-        var programmingExp: Int = 0,
+        val programmingExp: Int,
 
         @field:NotBlank
-        var major: String? = "",
+        val major: String,
 
         @field:NotBlank
-        var grade: String? = "",
+        val grade: String,
 
-        var backendReason: String? = "",
-        var waffleReason: String? = "",
-        var somethingToSay: String? = "",
-        var timestamp: LocalDateTime? = LocalDateTime.now(),
-    )
-
-    data class ModifyRequest(
-        var something: String? = ""
-        // 예시 - 지우고 새로 생성
+        val backendReason: String? = null,
+        val waffleReason: String? = null,
+        val somethingToSay: String? = null,
     )
 }

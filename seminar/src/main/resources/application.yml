@@ -14,3 +14,9 @@ spring:
       # update: 시작 시 자동 migrate
       # none: db 그대로
       # create-drop: 시작 시 테이블 create, 종료 시 drop
+
+app:
+  jwt:
+    jwt-secret-key: wafflestudio
+    jwt-expiration-in-ms: 10800000
+
