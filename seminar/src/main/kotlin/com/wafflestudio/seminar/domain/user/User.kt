@@ -20,4 +20,12 @@ class User(
     @field:NotNull
     val roles: String = "",
 
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "participant_id", referencedColumnName = "id")
+    val participantProfile: ParticipantProfile?,
+
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "participant_id", referencedColumnName = "id")
+    val instructorProfile: InstructorProfile?,
+
     ) : BaseEntity()
