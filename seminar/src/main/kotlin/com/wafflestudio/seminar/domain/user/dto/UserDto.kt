@@ -1,11 +1,8 @@
 package com.wafflestudio.seminar.domain.user.dto
 
-import com.wafflestudio.seminar.domain.os.dto.OperatingSystemDto
-import com.wafflestudio.seminar.domain.survey.model.SurveyResponse
-import com.wafflestudio.seminar.domain.user.InstructorProfile
-import com.wafflestudio.seminar.domain.user.ParticipantProfile
-import com.wafflestudio.seminar.domain.user.User
-import java.time.LocalDateTime
+import com.wafflestudio.seminar.domain.user.model.InstructorProfile
+import com.wafflestudio.seminar.domain.user.model.ParticipantProfile
+import com.wafflestudio.seminar.domain.user.model.User
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
@@ -43,4 +40,5 @@ class UserDto {
         @field:Min(1, message = "You should input the positive integer.")
         val year: Int? = null
     )
+
 }
