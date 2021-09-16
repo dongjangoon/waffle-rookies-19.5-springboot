@@ -1,7 +1,7 @@
 package com.wafflestudio.seminar.domain.seminar
 
 import com.wafflestudio.seminar.domain.model.BaseTimeEntity
-import com.wafflestudio.seminar.domain.user.ParticipantProfile
+import com.wafflestudio.seminar.domain.user.model.ParticipantProfile
 import javax.persistence.*
 
 @Entity

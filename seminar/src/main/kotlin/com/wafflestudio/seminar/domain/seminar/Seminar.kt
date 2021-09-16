@@ -1,10 +1,9 @@
 package com.wafflestudio.seminar.domain.seminar
 
 import com.wafflestudio.seminar.domain.model.BaseTimeEntity
-import com.wafflestudio.seminar.domain.user.InstructorProfile
+import com.wafflestudio.seminar.domain.user.model.InstructorProfile
 import javax.persistence.CascadeType
 import javax.persistence.Entity
-import javax.persistence.JoinColumn
 import javax.persistence.OneToMany
 
 @Entity

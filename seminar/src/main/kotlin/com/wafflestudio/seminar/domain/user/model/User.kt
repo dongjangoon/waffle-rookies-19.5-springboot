@@ -1,4 +1,4 @@
-package com.wafflestudio.seminar.domain.user
+package com.wafflestudio.seminar.domain.user.model
 
 import com.wafflestudio.seminar.domain.model.BaseEntity
 import javax.persistence.*
@@ -36,7 +36,7 @@ class User(
         )
         val participantProfile: ParticipantProfile? = null,
 
-        @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
         @JoinColumns(
             JoinColumn(name = "instructor_id", referencedColumnName = "id"),
             JoinColumn(name = "company", referencedColumnName = "company"),
@@ -44,4 +44,4 @@ class User(
         )
         val instructorProfile: InstructorProfile? = null,
 
-     ) : BaseEntity()
+    ) : BaseEntity()

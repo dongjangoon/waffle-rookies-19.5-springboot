@@ -2,7 +2,7 @@ package com.wafflestudio.seminar.domain.survey.model
 
 import com.wafflestudio.seminar.domain.model.BaseEntity
 import com.wafflestudio.seminar.domain.os.model.OperatingSystem
-import com.wafflestudio.seminar.domain.user.User
+import com.wafflestudio.seminar.domain.user.model.User
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.Max
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 class SurveyResponse(
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "os_id", referencedColumnName = "id")
     @field:NotNull
     val os: OperatingSystem,
@@ -23,19 +23,19 @@ class SurveyResponse(
 
     @Column(name = "spring_exp")
     @field:NotNull
-    @field:Min(0, message = "The value must be between 1 and 5")
+    @field:Min(1, message = "The value must be between 1 and 5")
     @field:Max(5, message = "The value must be between 1 and 5")
     val springExp: Int,
 
     @Column(name = "rdb_exp")
     @field:NotNull
-    @field:Min(0, message = "The value must be between 1 and 5")
+    @field:Min(1, message = "The value must be between 1 and 5")
     @field:Max(5, message = "The value must be between 1 and 5")
     val rdbExp: Int,
 
     @Column(name = "programming_exp")
     @field:NotNull
-    @field:Min(0, message = "The value must be between 1 and 5")
+    @field:Min(1, message = "The value must be between 1 and 5")
     @field:Max(5, message = "The value must be between 1 and 5")
     val programmingExp: Int,
 
