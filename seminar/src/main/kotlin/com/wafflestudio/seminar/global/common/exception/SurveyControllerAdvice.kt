@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class SurveyControllerAdvice() {
     private val logger = LoggerFactory.getLogger(this.javaClass.name)
     @ExceptionHandler(value = [DataNotFoundException::class])
-    fun notfound(e: WaffleException) =
+    fun notFound(e: WaffleException) =
         ResponseEntity(ErrorResponse(e.errorType.code, e.errorType.name, e.detail), HttpStatus.NOT_FOUND)
 
     @ExceptionHandler(value = [InvalidRequestException::class])
