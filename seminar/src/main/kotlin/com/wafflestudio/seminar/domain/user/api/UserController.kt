@@ -14,8 +14,9 @@ class UserController(
     private val userService: UserService,
     private val jwtTokenProvider: JwtTokenProvider
 ) {
+    // TODO: 2021-09-16 error 발생시 200으로 리턴되는 문제
     @PostMapping("/")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     fun signup(@RequestBody @Valid signupRequest: UserDto.SignupRequest, response: HttpServletResponse): UserDto.Response {
         val user = userService.signup(signupRequest)
         response.addHeader("Authentication", jwtTokenProvider.generateToken(user.email))
