@@ -1,5 +1,6 @@
 package com.wafflestudio.seminar.global.auth.model
 
+import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.domain.user.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -11,5 +12,10 @@ class UserPrincipalDetailService(private val userRepository: UserRepository) : U
     override fun loadUserByUsername(s: String): UserDetails {
         val user = userRepository.findByEmail(s) ?: throw UsernameNotFoundException("User with email '%s' not found")
         return UserPrincipal(user)
+    }
+
+    fun findUser(s: String): User {
+        val user = userRepository.findByEmail(s) ?: throw UsernameNotFoundException("User with email '%s' not found")
+        return user
     }
 }

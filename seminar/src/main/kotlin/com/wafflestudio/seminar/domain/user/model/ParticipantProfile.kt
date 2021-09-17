@@ -21,7 +21,7 @@ class ParticipantProfile (
     val accepted: Boolean = true,
 
     // OneToMany annotation 때문에 Serializable 상속
-    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "participant")
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL], mappedBy = "participant")
     val seminars: List<SeminarParticipant> = listOf(),
 
     ) : BaseTimeEntity(), Serializable
