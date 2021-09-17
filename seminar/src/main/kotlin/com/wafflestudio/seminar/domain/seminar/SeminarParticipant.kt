@@ -11,7 +11,7 @@ class SeminarParticipant (
     @JoinColumn(name = "seminar_id", referencedColumnName = "id")
     val seminar: Seminar,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "participant_id", referencedColumnName = "id")
     val participant: ParticipantProfile,
 

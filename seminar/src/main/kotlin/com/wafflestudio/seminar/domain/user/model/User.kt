@@ -28,7 +28,7 @@ class User(
      * cascade Type 을 ALL 로 지정해주어서 USER 영속성 전이 시에 participantProfile 이나
      * InstructorProfile 이 같이 영속성 전이 됩니다.
      */
-        @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+        @OneToOne(cascade = [CascadeType.ALL])
         @JoinColumns(
             JoinColumn(name = "participant_id", referencedColumnName = "id"),
             JoinColumn(name = "university", referencedColumnName = "university"),

@@ -9,8 +9,6 @@ import com.wafflestudio.seminar.global.auth.CurrentUser
 import com.wafflestudio.seminar.global.auth.JwtTokenProvider
 import com.wafflestudio.seminar.global.auth.dto.LoginRequest
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -23,7 +21,6 @@ class UserController(
     private val userRepository: UserRepository,
     private val jwtTokenProvider: JwtTokenProvider
 ) {
-    // TODO: 2021-09-16 error 발생시 200으로 리턴되는 문제
     @PostMapping("/")
     fun signup(@Valid @RequestBody signupRequest: UserDto.SignupRequest): ResponseEntity<UserDto.Response> {
         val user = userService.signup(signupRequest)
@@ -32,12 +29,8 @@ class UserController(
             .body(UserDto.Response(user))
     }
 
-    // TODO: 2021-09-17 지연 로딩할 때 트랜잭션을 벗어나서 조회하는 문제, fetch join 써보자
     @PostMapping("/signin/")
-    fun login(@RequestBody loginRequest: LoginRequest): UserDto.Response? {
-        val user = userService.findUserByEmail(loginRequest.email)
-        return user?.let { UserDto.Response(it) }
-    }
+    fun login(@RequestBody loginRequest: LoginRequest): Unit {}
 
     @GetMapping("/{user_id}/")
     fun getUserById(@PathVariable("user_id") user_id: Long): UserDto.Response {

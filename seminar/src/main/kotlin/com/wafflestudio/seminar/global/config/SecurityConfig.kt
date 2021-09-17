@@ -1,5 +1,7 @@
 package com.wafflestudio.seminar.global.config
 
+import com.wafflestudio.seminar.domain.user.repository.UserRepository
+import com.wafflestudio.seminar.domain.user.service.UserService
 import com.wafflestudio.seminar.global.auth.SigninAuthenticationFilter
 import com.wafflestudio.seminar.global.auth.JwtAuthenticationEntryPoint
 import com.wafflestudio.seminar.global.auth.JwtAuthenticationFilter
@@ -24,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class SecurityConfig(
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val userPrincipalDetailService: UserPrincipalDetailService
+    private val userPrincipalDetailService: UserPrincipalDetailService,
 ) : WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(daoAuthenticationProvider())
@@ -51,7 +53,7 @@ class SecurityConfig(
             .and()
             .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and()
-            .addFilter(SigninAuthenticationFilter(authenticationManager(), jwtTokenProvider))
+            .addFilter(SigninAuthenticationFilter(authenticationManager(), jwtTokenProvider, userPrincipalDetailService))
             .addFilter(JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider))
             .authorizeRequests()
             .antMatchers("/api/v1/users/signin/").permitAll()  // Auth entrypoint
