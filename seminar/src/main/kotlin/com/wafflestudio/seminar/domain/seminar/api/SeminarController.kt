@@ -1,9 +1,11 @@
 package com.wafflestudio.seminar.domain.seminar.api
 
 import com.wafflestudio.seminar.domain.seminar.dto.SeminarDto
+import com.wafflestudio.seminar.domain.seminar.model.Seminar
 import com.wafflestudio.seminar.domain.seminar.service.SeminarService
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.global.auth.CurrentUser
+import com.wafflestudio.seminar.global.common.dto.ListResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -33,8 +35,18 @@ class SeminarController(
     }
 
     @GetMapping("/{seminar_id}/")
-    fun update(@PathVariable("seminar_id") seminarId: Long): SeminarDto.Response {
+    fun getSeminarById(@PathVariable("seminar_id") seminarId: Long): SeminarDto.Response {
         val seminar = seminarService.getSeminarById(seminarId)
         return SeminarDto.Response(seminar)
+    }
+
+    @GetMapping("/")
+    fun getSeminarByQueryParam(@RequestParam allParams: Map<String, String>): ListResponse<SeminarDto.queryResponse> {
+        val seminars = seminarService.getSeminarsByQueryParams(allParams)
+        val queryResponse = seminars.map {
+            SeminarDto.queryResponse(it)
+        }
+
+        return ListResponse(queryResponse)
     }
 }
