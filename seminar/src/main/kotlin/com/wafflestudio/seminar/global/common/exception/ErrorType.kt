@@ -14,6 +14,7 @@ enum class ErrorType (
 
     CONFLICT(9000),
     USER_ALREADY_EXISTS(9001),
+    ALREADY_PARTICIPANT(9002),
 
     SERVER_ERROR(10000)
 }
