@@ -32,5 +32,9 @@ class SeminarController(
         return SeminarDto.Response(seminar)
     }
 
-
+    @GetMapping("/{seminar_id}/")
+    fun update(@PathVariable("seminar_id") seminarId: Long): SeminarDto.Response {
+        val seminar = seminarService.getSeminarById(seminarId)
+        return SeminarDto.Response(seminar)
+    }
 }
