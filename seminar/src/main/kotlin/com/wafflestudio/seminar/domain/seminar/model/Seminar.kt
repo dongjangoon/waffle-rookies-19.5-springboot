@@ -14,15 +14,15 @@ class Seminar (
 
     @Column
     @field:Min(1, message = "INPUT POSITIVE INTEGER")
-    val capacity: Int,
+    var capacity: Int,
 
     @Column
     @field:Min(1, message = "INPUT POSITIVE INTEGER")
-    val count: Int,
+    var count: Int,
 
     @Column
     @field:NotBlank
-    val time: String,
+    var time: String,
 
     @Column
     var online: Boolean = true,

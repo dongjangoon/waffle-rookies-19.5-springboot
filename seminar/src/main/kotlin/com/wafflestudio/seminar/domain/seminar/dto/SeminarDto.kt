@@ -47,4 +47,16 @@ class SeminarDto {
         val time: String,
         val online: String?,
     )
+
+    data class UpdateRequest(
+
+        @field:Min(1, message = "INPUT POSITIVE INTEGER")
+        val capacity: Int?,
+
+        @field:Min(1, message = "INPUT POSITIVE INTEGER")
+        val count: Int?,
+        val time: String?,
+        val online: String?,
+
+    )
 }
