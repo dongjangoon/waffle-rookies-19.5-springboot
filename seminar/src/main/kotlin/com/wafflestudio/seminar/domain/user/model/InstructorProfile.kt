@@ -9,10 +9,10 @@ import javax.persistence.*
 class InstructorProfile (
 
     @Column
-    val company: String = "",
+    var company: String = "",
 
     @Column
-    val year: Int? = null,
+    var year: Int? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seminar_id", referencedColumnName = "id")

@@ -12,8 +12,8 @@ class Seminar (
     /**
      * Seminar 가 없어지면 SeminarParticipant 도 같이 없어지도록 합니다.
      */
-    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "seminar")
-    val participants: List<SeminarParticipant> = listOf(),
+    @OneToMany(cascade = [CascadeType.REMOVE], mappedBy = "seminar")
+    val seminarParticipants: List<SeminarParticipant> = listOf(),
 
     @OneToMany(mappedBy = "seminar")
     val instructorProfile: List<InstructorProfile> = listOf(),

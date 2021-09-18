@@ -15,13 +15,14 @@ import javax.validation.constraints.NotBlank
 class ParticipantProfile (
 
     @Column
-    val university: String = "",
+    var university: String = "",
 
     @Column
-    val accepted: Boolean = true,
+    var accepted: Boolean = true,
 
     // OneToMany annotation 때문에 Serializable 상속
-    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL], mappedBy = "participant")
+    // TODO: 2021-09-17 fetch join? lazy 하게 받아올 방법 생각
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], mappedBy = "participantProfile")
     val seminars: List<SeminarParticipant> = listOf(),
 
     ) : BaseTimeEntity(), Serializable

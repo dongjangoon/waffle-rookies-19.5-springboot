@@ -41,4 +41,12 @@ class UserDto {
         val year: Int? = null
     )
 
+    data class ModifyRequest(
+        val university : String = "",
+
+        val company: String = "",
+        @field:Min(1, message = "You should input the positive integer.")
+        val year: Int? = null
+    )
+
 }
