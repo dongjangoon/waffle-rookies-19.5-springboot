@@ -1,4 +1,4 @@
-package com.wafflestudio.seminar.domain.seminar
+package com.wafflestudio.seminar.domain.seminar.model
 
 import com.wafflestudio.seminar.domain.model.BaseTimeEntity
 import com.wafflestudio.seminar.domain.user.model.ParticipantProfile
