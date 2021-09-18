@@ -29,19 +29,11 @@ class User(
      * InstructorProfile 이 같이 영속성 전이 됩니다.
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumns(
-        JoinColumn(name = "participant_id", referencedColumnName = "id"),
-        JoinColumn(name = "university", referencedColumnName = "university"),
-        JoinColumn(name = "accepted", referencedColumnName = "accepted")
-    )
+    @JoinColumn(name = "participant_id", referencedColumnName = "id")
     val participantProfile: ParticipantProfile? = null,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumns(
-        JoinColumn(name = "instructor_id", referencedColumnName = "id"),
-        JoinColumn(name = "company", referencedColumnName = "company"),
-        JoinColumn(name = "year", referencedColumnName = "year")
-    )
+    @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     val instructorProfile: InstructorProfile? = null,
 
     ) : BaseEntity()
