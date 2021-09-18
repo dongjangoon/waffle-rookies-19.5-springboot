@@ -33,6 +33,34 @@ class SeminarDto {
         )
     }
 
+    data class queryResponse(
+        val id: Long,
+        val name: String,
+        val capacity: Int,
+        val count: Int,
+        val time: String,
+        val online: Boolean,
+        var instructors: MutableList<InstructorSeminarResponseDto.Response>,
+        var participants: MutableList<ParticipantSeminarResponseDto.Response>,
+        val participant_count: Int,
+    ) {
+        constructor(seminar: Seminar) : this(
+            id = seminar.id,
+            name = seminar.name,
+            capacity = seminar.capacity,
+            count = seminar.count,
+            time = seminar.time,
+            online = seminar.online,
+            instructors = seminar.instructorProfile.map{
+                InstructorSeminarResponseDto.Response(it.user)
+            } as MutableList<InstructorSeminarResponseDto.Response>,
+            participants = seminar.seminarParticipants.map{
+                ParticipantSeminarResponseDto.Response(it.participantProfile.user)
+            } as MutableList<ParticipantSeminarResponseDto.Response>,
+            participant_count = seminar.seminarParticipants.size
+        )
+    }
+
     data class RegisterRequest(
         @field:NotBlank
         val name: String,

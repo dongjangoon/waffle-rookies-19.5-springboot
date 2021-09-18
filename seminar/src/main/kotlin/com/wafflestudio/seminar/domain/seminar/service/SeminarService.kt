@@ -75,9 +75,33 @@ class SeminarService(
         return seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
     }
 
+    // TODO: 2021-09-19 refactoring
+    fun getSeminarsByQueryParams(allParams: Map<String, String>): List<Seminar> {
+
+        return if (allParams.keys.containsAll(listOf("name", "order"))) {
+            if (allParams["order"] == "earliest") {
+                seminarRepository.findByNameContainingOrderByCreatedAtAsc(allParams["name"]!!)
+            } else {
+                seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
+            }
+        } else if (allParams.keys.contains("name")) {
+            seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
+        } else if (allParams.keys.contains("order")) {
+            if (allParams["order"] == "earliest") {
+                seminarRepository.findAllByOrderByCreatedAtAsc()
+            } else {
+                seminarRepository.findAllByOrderByCreatedAtDesc()
+            }
+        } else {
+            seminarRepository.findAllByOrderByCreatedAtDesc()
+        }
+
+    }
+
     private fun isTimeFormatValid(time: String): Boolean {
         val regex = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$".toRegex()
         return time.matches(regex)
     }
+
 
 }
