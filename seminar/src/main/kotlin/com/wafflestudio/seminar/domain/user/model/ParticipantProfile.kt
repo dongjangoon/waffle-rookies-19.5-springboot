@@ -1,18 +1,15 @@
 package com.wafflestudio.seminar.domain.user.model
 
-import com.wafflestudio.seminar.domain.model.BaseEntity
 import com.wafflestudio.seminar.domain.model.BaseTimeEntity
-import com.wafflestudio.seminar.domain.seminar.SeminarParticipant
-import jdk.jfr.BooleanFlag
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
+import com.wafflestudio.seminar.domain.seminar.model.SeminarParticipant
 import java.io.Serializable
-import java.time.LocalDateTime
 import javax.persistence.*
-import javax.validation.constraints.NotBlank
 
 @Entity
 class ParticipantProfile (
+
+    @OneToOne(mappedBy = "instructorProfile")
+    val user: User?,
 
     @Column
     var university: String = "",

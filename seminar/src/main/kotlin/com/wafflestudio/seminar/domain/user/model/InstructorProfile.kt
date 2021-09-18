@@ -1,12 +1,15 @@
 package com.wafflestudio.seminar.domain.user.model
 
 import com.wafflestudio.seminar.domain.model.BaseTimeEntity
-import com.wafflestudio.seminar.domain.seminar.Seminar
+import com.wafflestudio.seminar.domain.seminar.model.Seminar
 import java.io.Serializable
 import javax.persistence.*
 
 @Entity
 class InstructorProfile (
+
+    @OneToOne(mappedBy = "instructorProfile")
+    val user: User?,
 
     @Column
     var company: String = "",
@@ -16,6 +19,6 @@ class InstructorProfile (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seminar_id", referencedColumnName = "id")
-    val seminar: Seminar? = null,
+    var seminar: Seminar? = null,
 
     ) : BaseTimeEntity(), Serializable
