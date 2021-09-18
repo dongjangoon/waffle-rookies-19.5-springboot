@@ -11,8 +11,8 @@ class SeminarParticipant (
     @JoinColumn(name = "seminar_id", referencedColumnName = "id")
     val seminar: Seminar,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id", referencedColumnName = "id")
-    val participant: ParticipantProfile,
+    val participantProfile: ParticipantProfile,
 
     ) : BaseTimeEntity()

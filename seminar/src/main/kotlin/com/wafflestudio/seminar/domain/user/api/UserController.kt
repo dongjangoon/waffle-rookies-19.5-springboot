@@ -38,8 +38,15 @@ class UserController(
         return UserDto.Response(user)
     }
 
+    // TODO: 2021-09-18 유저 정보를 업데이트하고 나서 조회하면 업데이트 반영이 안됨
     @GetMapping("/me/")
     fun getCurrentUser(@CurrentUser user: User): UserDto.Response {
         return UserDto.Response(user)
+    }
+
+    @PutMapping("/me/")
+    fun updateCurrentUser(@RequestBody @Valid modifyRequest: UserDto.ModifyRequest, @CurrentUser user: User): UserDto.Response {
+        val modifiedUser = userService.update(modifyRequest, user)
+        return UserDto.Response(modifiedUser)
     }
 }
