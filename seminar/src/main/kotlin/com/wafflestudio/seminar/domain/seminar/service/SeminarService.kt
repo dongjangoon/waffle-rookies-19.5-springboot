@@ -71,7 +71,11 @@ class SeminarService(
         return seminar
     }
 
-    fun isTimeFormatValid(time: String): Boolean {
+    fun getSeminarById(seminarId: Long): Seminar {
+        return seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
+    }
+
+    private fun isTimeFormatValid(time: String): Boolean {
         val regex = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$".toRegex()
         return time.matches(regex)
     }
