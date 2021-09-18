@@ -10,6 +10,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: create
+      show-sql: true
       # create: 시작 시 테이블 drop 후 재생성
       # update: 시작 시 자동 migrate
       # none: db 그대로
