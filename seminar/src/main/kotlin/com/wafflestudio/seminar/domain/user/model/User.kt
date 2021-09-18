@@ -22,7 +22,7 @@ class User(
 
     @Column
     @field:NotNull
-    val roles: String = "",
+    var roles: String = "",
 
     /**
      * cascade Type 을 ALL 로 지정해주어서 USER 영속성 전이 시에 participantProfile 이나
@@ -30,7 +30,7 @@ class User(
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "participant_id", referencedColumnName = "id")
-    val participantProfile: ParticipantProfile? = null,
+    var participantProfile: ParticipantProfile? = null,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")

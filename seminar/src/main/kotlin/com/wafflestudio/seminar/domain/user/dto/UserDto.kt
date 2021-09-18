@@ -49,4 +49,9 @@ class UserDto {
         val year: Int? = null
     )
 
+    data class ParticipantRequest(
+        val university: String = "",
+        val accepted: Boolean = true
+    )
+
 }

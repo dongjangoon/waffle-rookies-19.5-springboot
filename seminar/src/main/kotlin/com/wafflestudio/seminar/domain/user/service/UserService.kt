@@ -1,6 +1,7 @@
 package com.wafflestudio.seminar.domain.user.service
 
 import com.wafflestudio.seminar.domain.user.dto.UserDto
+import com.wafflestudio.seminar.domain.user.exception.AlreadyParticipatedException
 import com.wafflestudio.seminar.domain.user.exception.RoleBadRequestException
 import com.wafflestudio.seminar.domain.user.exception.UserAlreadyExistsException
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
@@ -62,8 +63,17 @@ class UserService(
         return findUser
     }
 
-    fun findUserByEmail(email: String?): User? {
-        return userRepository.findByEmail(email)
+    // Think: 유저 조회를 안하고 좀 더 간단하게 영속성 flush 할 방법이 없을까
+    @Transactional
+    fun participateLater(participantRequest: UserDto.ParticipantRequest, user: User): User {
+        if (user.roles != INSTRUCTOR) throw AlreadyParticipatedException("You're already participant")
+
+        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
+        findUser.roles = "participant, instructor"
+        val participantProfile = ParticipantProfile(participantRequest.university, participantRequest.accepted)
+        participantProfileRepository.save(participantProfile)
+        findUser.participantProfile = participantProfile
+        return findUser
     }
 
 }

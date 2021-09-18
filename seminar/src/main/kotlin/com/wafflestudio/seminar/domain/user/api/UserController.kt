@@ -49,4 +49,12 @@ class UserController(
         val modifiedUser = userService.update(modifyRequest, user)
         return UserDto.Response(modifiedUser)
     }
+
+    @PostMapping("/participant/")
+    fun participateLater(@RequestBody participantRequest: UserDto.ParticipantRequest, @CurrentUser user: User): ResponseEntity<UserDto.Response> {
+        val participateLaterUser = userService.participateLater(participantRequest, user)
+        return ResponseEntity
+            .status(201)
+            .body(UserDto.Response(participateLaterUser))
+    }
 }
