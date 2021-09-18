@@ -5,10 +5,7 @@ import com.wafflestudio.seminar.domain.seminar.service.SeminarService
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.global.auth.CurrentUser
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -26,5 +23,14 @@ class SeminarController(
             .status(201)
             .body(SeminarDto.Response(seminar))
     }
+
+    @PutMapping("/{seminar_id}/")
+    fun update(@PathVariable("seminar_id") seminarId: Long,
+               @RequestBody @Valid updateRequest: SeminarDto.UpdateRequest,
+               @CurrentUser user: User): SeminarDto.Response {
+        val seminar = seminarService.update(seminarId, updateRequest, user)
+        return SeminarDto.Response(seminar)
+    }
+
 
 }

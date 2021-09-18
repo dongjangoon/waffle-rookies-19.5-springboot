@@ -41,7 +41,6 @@ class UserService(
         }
     }
 
-    @Transactional
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {
         val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
         when (findUser.roles) {
@@ -61,7 +60,6 @@ class UserService(
     }
 
     // Think: 유저 조회를 안하고 좀 더 간단하게 영속성 flush 할 방법이 없을까
-    @Transactional
     fun participateLater(participantRequest: UserDto.ParticipantRequest, user: User): User {
         if (user.roles != Role.INSTRUCTOR.role) throw AlreadyParticipatedException("You're already participant")
 

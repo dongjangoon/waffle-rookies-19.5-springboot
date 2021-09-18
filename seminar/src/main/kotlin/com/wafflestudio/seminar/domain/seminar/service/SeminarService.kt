@@ -1,9 +1,7 @@
 package com.wafflestudio.seminar.domain.seminar.service
 
 import com.wafflestudio.seminar.domain.seminar.dto.SeminarDto
-import com.wafflestudio.seminar.domain.seminar.exception.InvalidOnlineRequestException
-import com.wafflestudio.seminar.domain.seminar.exception.InvalidTimeRequestException
-import com.wafflestudio.seminar.domain.seminar.exception.NotInstructorException
+import com.wafflestudio.seminar.domain.seminar.exception.*
 import com.wafflestudio.seminar.domain.seminar.model.Seminar
 import com.wafflestudio.seminar.domain.seminar.repository.SeminarRepository
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
@@ -23,22 +21,59 @@ class SeminarService(
     fun register(registerRequest: SeminarDto.RegisterRequest, user: User): Seminar {
         if (user.roles != Role.INSTRUCTOR.role) throw NotInstructorException()
 
-        val regex = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$".toRegex()
-        if (!registerRequest.time.matches(regex)) throw InvalidTimeRequestException("WRONG TIME FORMAT")
+        if (!isTimeFormatValid(registerRequest.time)) throw InvalidTimeRequestException("WRONG TIME FORMAT")
 
-        val seminar =
-            Seminar(registerRequest.name, registerRequest.capacity, registerRequest.count, registerRequest.time)
+        val seminar = Seminar(registerRequest.name, registerRequest.capacity, registerRequest.count, registerRequest.time)
         when (registerRequest.online?.toLowerCase()) {
             "true" -> seminar.online = true
             "false" -> seminar.online = false
+            null -> seminar.online = true
+            else -> throw InvalidOnlineRequestException("Online should be 'true' or 'false'")
         }
 
         // Dirty Checking 을 위해 User 다시 조회
-        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
+        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException("USER NOT FOUND")
         findUser.instructorProfile?.seminar = seminar
+
         seminar.instructorProfile.add(findUser.instructorProfile!!)
 
         return seminarRepository.save(seminar)
+    }
+
+    fun update(seminarId: Long, updateRequest: SeminarDto.UpdateRequest, user: User): Seminar {
+        val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
+
+        if (user.id != seminar.instructorProfile[0].user!!.id) throw NotChargeException("You are not charger")
+
+        if (updateRequest.count != null) seminar.count = updateRequest.count
+
+        if (updateRequest.time != null) {
+            if (!isTimeFormatValid(updateRequest.time)) throw InvalidTimeRequestException("WRONG TIME FORMAT")
+            seminar.time = updateRequest.time
+        }
+
+        if (updateRequest.online != null) {
+            when (updateRequest.online.toLowerCase()) {
+                "true" -> seminar.online = true
+                "false" -> seminar.online = false
+                else -> throw InvalidOnlineRequestException("Online should be 'true' or 'false'")
+            }
+        }
+
+        // TODO: 2021-09-18 is_active 에 관한 것
+        if (updateRequest.capacity != null) {
+            if (updateRequest.capacity < seminar.seminarParticipants.size) {
+                throw InvalidCapacityRequestException("CAPACITY TOO SMALL")
+            }
+            seminar.capacity = updateRequest.capacity
+        }
+
+        return seminar
+    }
+
+    fun isTimeFormatValid(time: String): Boolean {
+        val regex = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$".toRegex()
+        return time.matches(regex)
     }
 
 }
