@@ -1,8 +1,8 @@
 package com.wafflestudio.seminar.domain.seminar.api
 
 import com.wafflestudio.seminar.domain.seminar.dto.SeminarDto
-import com.wafflestudio.seminar.domain.seminar.model.Seminar
 import com.wafflestudio.seminar.domain.seminar.service.SeminarService
+import com.wafflestudio.seminar.domain.user.dto.UserDto
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.global.auth.CurrentUser
 import com.wafflestudio.seminar.global.common.dto.ListResponse
@@ -41,12 +41,22 @@ class SeminarController(
     }
 
     @GetMapping("/")
-    fun getSeminarByQueryParam(@RequestParam allParams: Map<String, String>): ListResponse<SeminarDto.queryResponse> {
+    fun getSeminarByQueryParam(@RequestParam allParams: Map<String, String>): ListResponse<SeminarDto.QueryResponse> {
         val seminars = seminarService.getSeminarsByQueryParams(allParams)
         val queryResponse = seminars.map {
-            SeminarDto.queryResponse(it)
+            SeminarDto.QueryResponse(it)
         }
 
         return ListResponse(queryResponse)
+    }
+
+    @PostMapping("/{seminar_id}/user/")
+    fun enterSeminarLater(@PathVariable("seminar_id") seminarId: Long,
+                                @RequestBody @Valid enterRequest: SeminarDto.EnterRequest,
+                                @CurrentUser user: User): ResponseEntity<SeminarDto.Response> {
+        val seminar = seminarService.enterSeminarLater(seminarId, enterRequest, user)
+        return ResponseEntity
+            .status(201)
+            .body(SeminarDto.Response(seminar))
     }
 }

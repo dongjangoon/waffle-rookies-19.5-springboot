@@ -3,7 +3,10 @@ package com.wafflestudio.seminar.domain.seminar.service
 import com.wafflestudio.seminar.domain.seminar.dto.SeminarDto
 import com.wafflestudio.seminar.domain.seminar.exception.*
 import com.wafflestudio.seminar.domain.seminar.model.Seminar
+import com.wafflestudio.seminar.domain.seminar.model.SeminarParticipant
 import com.wafflestudio.seminar.domain.seminar.repository.SeminarRepository
+import com.wafflestudio.seminar.domain.user.dto.UserDto
+import com.wafflestudio.seminar.domain.user.exception.InvalidRoleRequestException
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.Role
 import com.wafflestudio.seminar.domain.user.model.User
@@ -98,10 +101,50 @@ class SeminarService(
 
     }
 
+    fun enterSeminarLater(seminarId: Long, enterRequest: SeminarDto.EnterRequest, user: User): Seminar {
+        val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
+        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
+
+        val requestRole = enterRequest.role
+        if (requestRole != Role.PARTICIPANT.role && requestRole != Role.INSTRUCTOR.role) {
+            throw InvalidRoleRequestException("Role should be 'instructor' or 'participant'")
+        }
+        if (!user.roles.contains(requestRole)) throw NotRoleSuitableException("ROLE NOT SUITABLE")
+
+        if (seminar.capacity <= seminar.seminarParticipants.size) throw AlreadyFullException("SEMINAR ALREADY FULL")
+
+        if (seminar.seminarParticipants.any { it.participantProfile.user?.id == user.id }
+            || seminar.instructorProfile.any { it.user?.id == user.id }) {
+            throw AlreadyEnteredException("ALREADY IN SEMINAR")
+        }
+
+        when(requestRole) {
+            Role.PARTICIPANT.role -> {
+                user.participantProfile ?: throw NotRoleSuitableException("ROLE NOT SUITABLE")
+                if(!user.participantProfile!!.accepted) throw NotAcceptedException("CANNOT PARTICIPATE")
+
+                val seminarParticipant = SeminarParticipant(seminar, findUser.participantProfile!!)
+                seminar.seminarParticipants.add(seminarParticipant)
+                findUser.participantProfile!!.seminars.add(seminarParticipant)
+            }
+            Role.INSTRUCTOR.role -> {
+                user.instructorProfile ?: throw NotRoleSuitableException("ROLE NOT SUITABLE")
+                if(user.instructorProfile?.seminar != null) throw AlreadyChargeException("You're charged")
+
+                findUser.instructorProfile!!.seminar = seminar
+                seminar.instructorProfile.add(findUser.instructorProfile!!)
+            }
+        }
+
+        return seminar
+    }
+
     private fun isTimeFormatValid(time: String): Boolean {
         val regex = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$".toRegex()
         return time.matches(regex)
     }
+
+
 
 
 }

@@ -30,7 +30,10 @@ class UserController(
     }
 
     @PostMapping("/signin/")
-    fun login(@RequestBody loginRequest: LoginRequest): Unit {}
+    fun login(@RequestBody loginRequest: LoginRequest): UserDto.Response {
+        val user = userService.findByEmail(loginRequest)
+        return UserDto.Response(user)
+    }
 
     @GetMapping("/{user_id}/")
     fun getUserById(@PathVariable("user_id") user_id: Long): UserDto.Response {
@@ -50,6 +53,7 @@ class UserController(
         return UserDto.Response(modifiedUser)
     }
 
+    // TODO: 2021-09-19 순환 참조 고치기
     @PostMapping("/participant/")
     fun participateLater(@RequestBody participantRequest: UserDto.ParticipantRequest, @CurrentUser user: User): ResponseEntity<UserDto.Response> {
         val participateLaterUser = userService.participateLater(participantRequest, user)
