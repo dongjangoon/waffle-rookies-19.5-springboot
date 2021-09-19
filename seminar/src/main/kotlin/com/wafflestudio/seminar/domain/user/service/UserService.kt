@@ -28,15 +28,16 @@ class UserService(
         if (userRepository.existsByEmail(signupRequest.email)) throw UserAlreadyExistsException()
         val encodedPassword = passwordEncoder.encode(signupRequest.password)
 
-        // when 구문으로 대체 가능
-        return if (signupRequest.role == Role.PARTICIPANT.role) {
-            val participantProfile = ParticipantProfile(null, signupRequest.university, signupRequest.accepted)
-            userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.PARTICIPANT.role, participantProfile, null))
-        } else if (signupRequest.role == Role.INSTRUCTOR.role) {
-            val instructorProfile = InstructorProfile(null, signupRequest.company, signupRequest.year)
-            userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.INSTRUCTOR.role, null, instructorProfile))
-        } else {
-            throw InvalidRoleRequestException("role should be 'participant' or 'instructor'")
+        return when (signupRequest.role) {
+            Role.PARTICIPANT.role -> {
+                val participantProfile = ParticipantProfile(null, signupRequest.university, signupRequest.accepted)
+                userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.PARTICIPANT.role, participantProfile, null))
+            }
+            Role.INSTRUCTOR.role -> {
+                val instructorProfile = InstructorProfile(null, signupRequest.company, signupRequest.year)
+                userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.INSTRUCTOR.role, null, instructorProfile))
+            }
+            else -> throw InvalidRoleRequestException("role should be 'participant' or 'instructor'")
         }
     }
 

@@ -22,7 +22,7 @@ class SeminarService(
     private val userRepository: UserRepository,
 ) {
     fun register(registerRequest: SeminarDto.RegisterRequest, user: User): Seminar {
-        if (user.roles != Role.INSTRUCTOR.role) throw NotInstructorException()
+        if (!user.roles.contains(Role.INSTRUCTOR.role)) throw NotInstructorException("NOT_INSTRUCTOR")
 
         if (!isTimeFormatValid(registerRequest.time)) throw InvalidTimeRequestException("WRONG TIME FORMAT")
 
