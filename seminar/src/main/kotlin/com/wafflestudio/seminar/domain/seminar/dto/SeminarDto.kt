@@ -67,7 +67,7 @@ class SeminarDto {
             participants = seminar.seminarParticipants.map{
                 ParticipantProfileDto.SeminarResponse(it.participantProfile, it)
             } as MutableList<ParticipantProfileDto.SeminarResponse>,
-            participant_count = seminar.seminarParticipants.size
+            participant_count = seminar.seminarParticipants.size - seminar.seminarParticipants.count { !it.isActive }
         )
     }
 

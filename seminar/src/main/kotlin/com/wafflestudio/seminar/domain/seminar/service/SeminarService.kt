@@ -65,7 +65,8 @@ class SeminarService(
 
         // TODO: 2021-09-18 is_active 에 관한 것
         if (updateRequest.capacity != null) {
-            if (updateRequest.capacity < seminar.seminarParticipants.size) {
+            val isActiveCount = seminar.seminarParticipants.count { !it.isActive }
+            if (updateRequest.capacity < seminar.seminarParticipants.size - isActiveCount) {
                 throw InvalidCapacityRequestException("CAPACITY TOO SMALL")
             }
             seminar.capacity = updateRequest.capacity
