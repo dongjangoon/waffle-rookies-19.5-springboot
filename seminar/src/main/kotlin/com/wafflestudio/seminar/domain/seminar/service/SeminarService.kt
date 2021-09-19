@@ -11,8 +11,11 @@ import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.Role
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.domain.user.repository.UserRepository
+import com.wafflestudio.seminar.global.common.exception.InvalidRequestException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @Service
@@ -63,7 +66,6 @@ class SeminarService(
             }
         }
 
-        // TODO: 2021-09-18 is_active 에 관한 것
         if (updateRequest.capacity != null) {
             val isActiveCount = seminar.seminarParticipants.count { !it.isActive }
             if (updateRequest.capacity < seminar.seminarParticipants.size - isActiveCount) {
@@ -116,7 +118,7 @@ class SeminarService(
 
         if (seminar.seminarParticipants.any { it.participantProfile.user?.id == user.id }
             || seminar.instructorProfile.any { it.user?.id == user.id }) {
-            throw AlreadyEnteredException("ALREADY IN SEMINAR")
+            throw AlreadyEnteredException("ALREADY IN SEMINAR or GAVE UP SEMINAR")
         }
 
         when(requestRole) {
@@ -136,6 +138,18 @@ class SeminarService(
                 seminar.instructorProfile.add(findUser.instructorProfile!!)
             }
         }
+
+        return seminar
+    }
+
+    fun giveUp(seminarId: Long, user: User): Seminar {
+        val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
+        if (seminar.instructorProfile.any { it.id == user.instructorProfile?.id }) throw InstructorGiveUpException("YOU ARE INSTRUCTOR")
+
+        seminar.seminarParticipants.find {
+            it.participantProfile.id == user.participantProfile?.id
+        }?.apply { isActive = false; droppedAt = LocalDateTime.now() }
+            ?: return seminar
 
         return seminar
     }

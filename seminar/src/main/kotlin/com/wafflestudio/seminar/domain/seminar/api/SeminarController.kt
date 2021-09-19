@@ -52,11 +52,18 @@ class SeminarController(
 
     @PostMapping("/{seminar_id}/user/")
     fun enterSeminarLater(@PathVariable("seminar_id") seminarId: Long,
-                                @RequestBody @Valid enterRequest: SeminarDto.EnterRequest,
-                                @CurrentUser user: User): ResponseEntity<SeminarDto.Response> {
+                          @RequestBody @Valid enterRequest: SeminarDto.EnterRequest,
+                          @CurrentUser user: User): ResponseEntity<SeminarDto.Response> {
         val seminar = seminarService.enterSeminarLater(seminarId, enterRequest, user)
         return ResponseEntity
             .status(201)
             .body(SeminarDto.Response(seminar))
+    }
+
+    @DeleteMapping("/{seminar_id}/user/me/")
+    fun giveUp(@PathVariable("seminar_id") seminarId: Long,
+               @CurrentUser user: User): SeminarDto.Response {
+        val seminar = seminarService.giveUp(seminarId, user)
+        return SeminarDto.Response(seminar)
     }
 }
