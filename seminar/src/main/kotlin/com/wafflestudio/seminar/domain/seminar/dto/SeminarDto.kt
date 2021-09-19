@@ -33,7 +33,7 @@ class SeminarDto {
         )
     }
 
-    data class queryResponse(
+    data class QueryResponse(
         val id: Long,
         val name: String,
         val capacity: Int,
@@ -85,6 +85,10 @@ class SeminarDto {
         val count: Int?,
         val time: String?,
         val online: String?,
+    )
 
+    data class EnterRequest(
+        @field:NotBlank
+        val role: String,
     )
 }

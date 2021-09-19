@@ -2,16 +2,16 @@ package com.wafflestudio.seminar.domain.user.service
 
 import com.wafflestudio.seminar.domain.user.dto.UserDto
 import com.wafflestudio.seminar.domain.user.exception.AlreadyParticipatedException
-import com.wafflestudio.seminar.domain.user.exception.RoleBadRequestException
+import com.wafflestudio.seminar.domain.user.exception.InvalidRoleRequestException
 import com.wafflestudio.seminar.domain.user.exception.UserAlreadyExistsException
 import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.InstructorProfile
 import com.wafflestudio.seminar.domain.user.model.ParticipantProfile
 import com.wafflestudio.seminar.domain.user.model.Role
 import com.wafflestudio.seminar.domain.user.model.User
-import com.wafflestudio.seminar.domain.user.repository.InstructorProfileRepository
 import com.wafflestudio.seminar.domain.user.repository.ParticipantProfileRepository
 import com.wafflestudio.seminar.domain.user.repository.UserRepository
+import com.wafflestudio.seminar.global.auth.dto.LoginRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -22,7 +22,6 @@ import javax.transaction.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val participantProfileRepository: ParticipantProfileRepository,
-    private val instructorProfileRepository: InstructorProfileRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
     fun signup(signupRequest: UserDto.SignupRequest): User {
@@ -37,8 +36,12 @@ class UserService(
             val instructorProfile = InstructorProfile(null, signupRequest.company, signupRequest.year)
             userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.INSTRUCTOR.role, null, instructorProfile))
         } else {
-            throw RoleBadRequestException("role should be 'participant' or 'instructor'")
+            throw InvalidRoleRequestException("role should be 'participant' or 'instructor'")
         }
+    }
+
+    fun findByEmail(loginRequest: LoginRequest): User {
+        return userRepository.findByEmail(loginRequest.email)!!
     }
 
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {
