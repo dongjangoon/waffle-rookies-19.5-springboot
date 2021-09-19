@@ -1,8 +1,8 @@
 package com.wafflestudio.seminar.domain.seminar.dto
 
 import com.wafflestudio.seminar.domain.seminar.model.Seminar
-import com.wafflestudio.seminar.domain.user.dto.InstructorSeminarResponseDto
-import com.wafflestudio.seminar.domain.user.dto.ParticipantSeminarResponseDto
+import com.wafflestudio.seminar.domain.user.dto.InstructorProfileDto
+import com.wafflestudio.seminar.domain.user.dto.ParticipantProfileDto
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
@@ -14,8 +14,8 @@ class SeminarDto {
         val count: Int,
         val time: String,
         val online: Boolean,
-        var instructors: MutableList<InstructorSeminarResponseDto.Response>,
-        var participants: MutableList<ParticipantSeminarResponseDto.Response>
+        var instructors: MutableList<InstructorProfileDto.SeminarResponse>,
+        var participants: MutableList<ParticipantProfileDto.SeminarResponse>
     ) {
         constructor(seminar: Seminar) : this(
             id = seminar.id,
@@ -25,11 +25,21 @@ class SeminarDto {
             time = seminar.time,
             online = seminar.online,
             instructors = seminar.instructorProfile.map{
-                InstructorSeminarResponseDto.Response(it.user)
-            } as MutableList<InstructorSeminarResponseDto.Response>,
+                InstructorProfileDto.SeminarResponse(it.user)
+            } as MutableList<InstructorProfileDto.SeminarResponse>,
             participants = seminar.seminarParticipants.map{
-                ParticipantSeminarResponseDto.Response(it.participantProfile.user)
-            } as MutableList<ParticipantSeminarResponseDto.Response>,
+                ParticipantProfileDto.SeminarResponse(it.participantProfile, it)
+            } as MutableList<ParticipantProfileDto.SeminarResponse>,
+        )
+    }
+
+    data class ChargeResponse(
+        val id: Long,
+        val name: String,
+    ) {
+        constructor(seminar: Seminar) : this(
+            id = seminar.id,
+            name = seminar.name,
         )
     }
 
@@ -40,8 +50,8 @@ class SeminarDto {
         val count: Int,
         val time: String,
         val online: Boolean,
-        var instructors: MutableList<InstructorSeminarResponseDto.Response>,
-        var participants: MutableList<ParticipantSeminarResponseDto.Response>,
+        var instructors: MutableList<InstructorProfileDto.SeminarResponse>,
+        var participants: MutableList<ParticipantProfileDto.SeminarResponse>,
         val participant_count: Int,
     ) {
         constructor(seminar: Seminar) : this(
@@ -52,11 +62,11 @@ class SeminarDto {
             time = seminar.time,
             online = seminar.online,
             instructors = seminar.instructorProfile.map{
-                InstructorSeminarResponseDto.Response(it.user)
-            } as MutableList<InstructorSeminarResponseDto.Response>,
+                InstructorProfileDto.SeminarResponse(it.user)
+            } as MutableList<InstructorProfileDto.SeminarResponse>,
             participants = seminar.seminarParticipants.map{
-                ParticipantSeminarResponseDto.Response(it.participantProfile.user)
-            } as MutableList<ParticipantSeminarResponseDto.Response>,
+                ParticipantProfileDto.SeminarResponse(it.participantProfile, it)
+            } as MutableList<ParticipantProfileDto.SeminarResponse>,
             participant_count = seminar.seminarParticipants.size
         )
     }
