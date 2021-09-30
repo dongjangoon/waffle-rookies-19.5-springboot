@@ -5,6 +5,7 @@ import com.wafflestudio.seminar.domain.user.dto.InstructorProfileDto
 import com.wafflestudio.seminar.domain.user.dto.ParticipantProfileDto
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Pattern
 
 class SeminarDto {
     data class Response(
@@ -82,6 +83,7 @@ class SeminarDto {
         val count: Int,
 
         @field:NotBlank
+        @field:Pattern(regexp = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$", message = "WRONG TIME FORMAT")
         val time: String,
         val online: String?,
     )
@@ -93,6 +95,8 @@ class SeminarDto {
 
         @field:Min(1, message = "INPUT POSITIVE INTEGER")
         val count: Int?,
+
+        @field:Pattern(regexp = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$", message = "WRONG TIME FORMAT")
         val time: String?,
         val online: String?,
     )

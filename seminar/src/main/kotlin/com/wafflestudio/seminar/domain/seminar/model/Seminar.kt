@@ -5,6 +5,7 @@ import com.wafflestudio.seminar.domain.user.model.InstructorProfile
 import javax.persistence.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Pattern
 
 @Entity
 @Table(name = "seminars")
@@ -23,6 +24,7 @@ class Seminar (
 
     @Column
     @field:NotBlank
+    @field:Pattern(regexp = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$")
     var time: String,
 
     @Column

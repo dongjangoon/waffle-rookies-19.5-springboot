@@ -41,10 +41,6 @@ class UserService(
         }
     }
 
-    fun findByEmail(email: String?): User? {
-        return userRepository.findByEmail(email) ?: throw UserNotFoundException("USER NOT FOUND")
-    }
-
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {
         val findUser = userRepository.findById(user.id).orElseThrow() ?: throw UserNotFoundException()
         when (findUser.roles) {
@@ -69,9 +65,11 @@ class UserService(
 
         val findUser = userRepository.findById(user.id).orElseThrow() ?: throw UserNotFoundException()
         findUser.roles = Role.BOTH.role
+
         val participantProfile = ParticipantProfile(findUser, participantRequest.university, participantRequest.accepted)
         participantProfileRepository.save(participantProfile)
         findUser.participantProfile = participantProfile
+
         return findUser
     }
 
