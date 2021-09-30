@@ -11,11 +11,11 @@ import javax.persistence.*
 open class BaseTimeEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    open val id: Long = 0,
 
     @CreatedDate
-    var createdAt: LocalDateTime? = null,
+    open var createdAt: LocalDateTime? = null,
 
     @LastModifiedDate
-    var updatedAt: LocalDateTime? = null
+    open var updatedAt: LocalDateTime? = null
 )

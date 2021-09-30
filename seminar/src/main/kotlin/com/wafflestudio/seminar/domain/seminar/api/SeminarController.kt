@@ -58,7 +58,7 @@ class SeminarController(
     fun enterSeminarLater(@PathVariable("seminar_id") seminarId: Long,
                           @RequestBody @Valid enterRequest: SeminarDto.EnterRequest,
                           @CurrentUser user: User): ResponseEntity<SeminarDto.Response> {
-        val seminar = seminarService.enterSeminarLater(seminarId, enterRequest, user)
+        val seminar = seminarService.enterSeminar(seminarId, enterRequest, user)
         return ResponseEntity
             .status(201)
             .body(SeminarDto.Response(seminar))

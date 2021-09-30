@@ -47,25 +47,27 @@ class SeminarService(
     fun update(seminarId: Long, updateRequest: SeminarDto.UpdateRequest, user: User): Seminar {
         val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
 
-        if (!seminar.instructorProfile.contains(user.instructorProfile)) throw NotChargeException("You are not charger")
+        if (!seminar.instructorProfile.any { it ->
+            it.id == user.instructorProfile?.id
+        }) throw NotChargeException("You are not charger")
 
-        if (updateRequest.count != null) seminar.count = updateRequest.count
-        if (updateRequest.time != null) seminar.time = updateRequest.time
-
-        if (updateRequest.online != null) {
-            when (updateRequest.online.toLowerCase()) {
+        updateRequest.online?.let { it ->
+            when (it.toLowerCase()) {
                 "true" -> seminar.online = true
                 "false" -> seminar.online = false
                 else -> throw InvalidOnlineRequestException("Online should be 'true' or 'false'")
             }
         }
 
-        if (updateRequest.capacity != null) {
-            val isActiveCount = seminar.seminarParticipants.count { !it.isActive }
-            if (updateRequest.capacity < seminar.seminarParticipants.size - isActiveCount) {
+        updateRequest.capacity?.let { it ->
+            if (it < seminar.seminarParticipants.count { it.isActive })
                 throw InvalidCapacityRequestException("CAPACITY TOO SMALL")
-            }
-            seminar.capacity = updateRequest.capacity
+        }
+
+        seminar.apply {
+            updateRequest.capacity?.let { capacity = it }
+            updateRequest.count?.let { count = it }
+            updateRequest.time?.let { time = it }
         }
 
         return seminar
@@ -93,21 +95,18 @@ class SeminarService(
 
     }
 
-    fun enterSeminarLater(seminarId: Long, enterRequest: SeminarDto.EnterRequest, user: User): Seminar {
+    fun enterSeminar(seminarId: Long, enterRequest: SeminarDto.EnterRequest, user: User): Seminar {
         val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
         val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
 
         val requestRole = enterRequest.role
-        if (requestRole != Role.PARTICIPANT.role && requestRole != Role.INSTRUCTOR.role) {
-            throw InvalidRoleRequestException("Role should be 'instructor' or 'participant'")
-        }
         if (!user.roles.contains(requestRole)) throw NotRoleSuitableException("ROLE NOT SUITABLE")
 
         if (seminar.capacity <= seminar.seminarParticipants.size) throw AlreadyFullException("SEMINAR ALREADY FULL")
 
         if (seminar.seminarParticipants.any { it.participantProfile.user?.id == user.id }
             || seminar.instructorProfile.any { it.user?.id == user.id }) {
-            throw AlreadyEnteredException("ALREADY IN SEMINAR or GAVE UP SEMINAR")
+            throw AlreadyEnteredException("ALREADY IN SEMINAR or DROPPED SEMINAR")
         }
 
         when(requestRole) {
@@ -137,8 +136,10 @@ class SeminarService(
 
         seminar.seminarParticipants.find {
             it.participantProfile.id == user.participantProfile?.id
-        }?.apply { isActive = false; droppedAt = LocalDateTime.now() }
-            ?: return seminar
+        }?.apply {
+            isActive = false
+            droppedAt = LocalDateTime.now()
+        } ?: return seminar
 
         return seminar
     }
