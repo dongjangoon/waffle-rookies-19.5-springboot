@@ -46,7 +46,7 @@ class UserService(
     }
 
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {
-        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
+        val findUser = userRepository.findById(user.id).orElseThrow() ?: throw UserNotFoundException()
         when (findUser.roles) {
             Role.PARTICIPANT.role -> {
                 findUser.participantProfile?.university = modifyRequest.university }
@@ -67,7 +67,7 @@ class UserService(
     fun participateLater(participantRequest: UserDto.ParticipantRequest, user: User): User {
         if (user.roles != Role.INSTRUCTOR.role) throw AlreadyParticipatedException("You're already participant")
 
-        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
+        val findUser = userRepository.findById(user.id).orElseThrow() ?: throw UserNotFoundException()
         findUser.roles = Role.BOTH.role
         val participantProfile = ParticipantProfile(findUser, participantRequest.university, participantRequest.accepted)
         participantProfileRepository.save(participantProfile)
