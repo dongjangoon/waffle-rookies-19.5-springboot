@@ -10,12 +10,14 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: create
-      format_sql: true
     show-sql: true
       # create: 시작 시 테이블 drop 후 재생성
       # update: 시작 시 자동 migrate
       # none: db 그대로
       # create-drop: 시작 시 테이블 create, 종료 시 drop
+    properties:
+      hibernate:
+        format_sql: true
 
 server:
   error:

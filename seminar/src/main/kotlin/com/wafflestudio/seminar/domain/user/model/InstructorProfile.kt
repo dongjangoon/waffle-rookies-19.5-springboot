@@ -6,6 +6,7 @@ import java.io.Serializable
 import javax.persistence.*
 
 @Entity
+@Table(name = "instructors")
 class InstructorProfile (
 
     @OneToOne(mappedBy = "instructorProfile")

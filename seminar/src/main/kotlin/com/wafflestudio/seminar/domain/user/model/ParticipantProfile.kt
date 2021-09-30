@@ -6,6 +6,7 @@ import java.io.Serializable
 import javax.persistence.*
 
 @Entity
+@Table(name = "participants")
 class ParticipantProfile (
 
     @OneToOne(mappedBy = "participantProfile")
@@ -17,9 +18,8 @@ class ParticipantProfile (
     @Column
     var accepted: Boolean = true,
 
-    // OneToMany annotation 때문에 Serializable 상속
-    // TODO: 2021-09-17 fetch join? lazy 하게 받아올 방법 생각
-    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL], mappedBy = "participantProfile")
+    @Column(name = "seminars")
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "participantProfile")
     val seminars: MutableList<SeminarParticipant> = mutableListOf(),
 
     ) : BaseTimeEntity(), Serializable

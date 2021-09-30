@@ -7,6 +7,7 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
 @Entity
+@Table(name = "seminar")
 class Seminar (
     @Column
     @field:NotBlank

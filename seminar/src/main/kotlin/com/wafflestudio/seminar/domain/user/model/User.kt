@@ -5,8 +5,8 @@ import javax.persistence.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-@Entity
 @Table(name = "seminar_user")
+@Entity
 class User(
     @Column
     @field:NotBlank
@@ -35,5 +35,4 @@ class User(
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     val instructorProfile: InstructorProfile? = null,
-
-    ) : BaseEntity()
+) : BaseEntity()

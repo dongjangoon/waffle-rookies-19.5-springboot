@@ -31,8 +31,8 @@ class UserController(
 
     @PostMapping("/signin/")
     fun login(@RequestBody loginRequest: LoginRequest): UserDto.Response {
-        val user = userService.findByEmail(loginRequest)
-        return UserDto.Response(user)
+        val user = userService.findByEmail(loginRequest.email)
+        return UserDto.Response(user!!)
     }
 
     @GetMapping("/{user_id}/")
@@ -41,7 +41,6 @@ class UserController(
         return UserDto.Response(user)
     }
 
-    // TODO: 2021-09-18 유저 정보를 업데이트하고 나서 조회하면 업데이트 반영이 안됨
     @GetMapping("/me/")
     fun getCurrentUser(@CurrentUser user: User): UserDto.Response {
         return UserDto.Response(user)
@@ -53,7 +52,6 @@ class UserController(
         return UserDto.Response(modifiedUser)
     }
 
-    // TODO: 2021-09-19 순환 참조 고치기
     @PostMapping("/participant/")
     fun participateLater(@RequestBody participantRequest: UserDto.ParticipantRequest, @CurrentUser user: User): ResponseEntity<UserDto.Response> {
         val participateLaterUser = userService.participateLater(participantRequest, user)

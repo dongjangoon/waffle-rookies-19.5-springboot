@@ -85,21 +85,29 @@ class SeminarService(
     fun getSeminarsByQueryParams(allParams: Map<String, String>): List<Seminar> {
 
         return if (allParams.keys.containsAll(listOf("name", "order"))) {
+
             if (allParams["order"] == "earliest") {
                 seminarRepository.findByNameContainingOrderByCreatedAtAsc(allParams["name"]!!)
             } else {
                 seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
             }
+
         } else if (allParams.keys.contains("name")) {
+
             seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
+
         } else if (allParams.keys.contains("order")) {
+
             if (allParams["order"] == "earliest") {
                 seminarRepository.findAllByOrderByCreatedAtAsc()
             } else {
                 seminarRepository.findAllByOrderByCreatedAtDesc()
             }
+
         } else {
+
             seminarRepository.findAllByOrderByCreatedAtDesc()
+
         }
 
     }
