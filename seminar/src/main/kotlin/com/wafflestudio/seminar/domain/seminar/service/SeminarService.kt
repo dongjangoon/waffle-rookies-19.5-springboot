@@ -27,8 +27,6 @@ class SeminarService(
     fun register(registerRequest: SeminarDto.RegisterRequest, user: User): Seminar {
         if (!user.roles.contains(Role.INSTRUCTOR.role)) throw NotInstructorException("NOT_INSTRUCTOR")
 
-        if (!isTimeFormatValid(registerRequest.time)) throw InvalidTimeRequestException("WRONG TIME FORMAT")
-
         val seminar = Seminar(registerRequest.name, registerRequest.capacity, registerRequest.count, registerRequest.time)
         when (registerRequest.online?.toLowerCase()) {
             "true" -> seminar.online = true
@@ -52,11 +50,7 @@ class SeminarService(
         if (!seminar.instructorProfile.contains(user.instructorProfile)) throw NotChargeException("You are not charger")
 
         if (updateRequest.count != null) seminar.count = updateRequest.count
-
-        if (updateRequest.time != null) {
-            if (!isTimeFormatValid(updateRequest.time)) throw InvalidTimeRequestException("WRONG TIME FORMAT")
-            seminar.time = updateRequest.time
-        }
+        if (updateRequest.time != null) seminar.time = updateRequest.time
 
         if (updateRequest.online != null) {
             when (updateRequest.online.toLowerCase()) {
@@ -77,35 +71,24 @@ class SeminarService(
         return seminar
     }
 
-    fun getSeminarById(seminarId: Long): Seminar {
-        return seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
-    }
-
     // TODO: 2021-09-19 refactoring
     fun getSeminarsByQueryParams(allParams: Map<String, String>): List<Seminar> {
 
-        return if (allParams.keys.containsAll(listOf("name", "order"))) {
-
-            if (allParams["order"] == "earliest") {
-                seminarRepository.findByNameContainingOrderByCreatedAtAsc(allParams["name"]!!)
-            } else {
+        return when {
+            allParams.keys.containsAll(listOf("name", "order")) -> {
+                if (allParams["order"] == "earliest") seminarRepository.findByNameContainingOrderByCreatedAtAsc(allParams["name"]!!)
+                else seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
+            }
+            allParams.keys.contains("name") -> {
                 seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
             }
-
-        } else if (allParams.keys.contains("name")) {
-
-            seminarRepository.findByNameContainingOrderByCreatedAtDesc(allParams["name"]!!)
-
-        } else if (allParams.keys.contains("order")) {
-
-            if (allParams["order"] == "earliest") {
-                seminarRepository.findAllByOrderByCreatedAtAsc()
-            } else {
+            allParams.keys.contains("order") -> {
+                if (allParams["order"] == "earliest") seminarRepository.findAllByOrderByCreatedAtAsc()
+                else seminarRepository.findAllByOrderByCreatedAtDesc()
+            }
+            else -> {
                 seminarRepository.findAllByOrderByCreatedAtDesc()
             }
-
-        } else {
-            seminarRepository.findAllByOrderByCreatedAtDesc()
         }
 
     }
@@ -159,13 +142,5 @@ class SeminarService(
 
         return seminar
     }
-
-    private fun isTimeFormatValid(time: String): Boolean {
-        val regex = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$".toRegex()
-        return time.matches(regex)
-    }
-
-
-
 
 }

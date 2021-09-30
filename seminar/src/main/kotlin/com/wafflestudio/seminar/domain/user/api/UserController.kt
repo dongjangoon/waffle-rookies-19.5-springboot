@@ -29,12 +29,6 @@ class UserController(
             .body(UserDto.Response(user))
     }
 
-    @PostMapping("/signin/")
-    fun login(@RequestBody loginRequest: LoginRequest): UserDto.Response {
-        val user = userService.findByEmail(loginRequest.email)
-        return UserDto.Response(user!!)
-    }
-
     @GetMapping("/{user_id}/")
     fun getUserById(@PathVariable("user_id") user_id: Long): UserDto.Response {
         val user = userRepository.findByIdOrNull(user_id) ?: throw UserNotFoundException("NO USER")

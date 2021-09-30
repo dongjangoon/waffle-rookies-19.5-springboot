@@ -1,11 +1,14 @@
 package com.wafflestudio.seminar.domain.seminar.api
 
 import com.wafflestudio.seminar.domain.seminar.dto.SeminarDto
+import com.wafflestudio.seminar.domain.seminar.exception.SeminarNotFoundException
+import com.wafflestudio.seminar.domain.seminar.repository.SeminarRepository
 import com.wafflestudio.seminar.domain.seminar.service.SeminarService
 import com.wafflestudio.seminar.domain.user.dto.UserDto
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.global.auth.CurrentUser
 import com.wafflestudio.seminar.global.common.dto.ListResponse
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -14,6 +17,7 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/seminars")
 class SeminarController(
     private val seminarService: SeminarService,
+    private val seminarRepository: SeminarRepository
 ) {
     /**
      * response 에서 어차피 participants 는 여기서 0명, instructor 도 한명만 고려해주면 됨
@@ -36,7 +40,7 @@ class SeminarController(
 
     @GetMapping("/{seminar_id}/")
     fun getSeminarById(@PathVariable("seminar_id") seminarId: Long): SeminarDto.Response {
-        val seminar = seminarService.getSeminarById(seminarId)
+        val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
         return SeminarDto.Response(seminar)
     }
 
