@@ -103,6 +103,7 @@ class SeminarDto {
 
     data class EnterRequest(
         @field:NotBlank
+        @field:Pattern(regexp = "(instructor|participant)")
         val role: String,
     )
 }
