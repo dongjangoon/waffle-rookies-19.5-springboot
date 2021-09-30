@@ -49,7 +49,7 @@ class SeminarService(
     fun update(seminarId: Long, updateRequest: SeminarDto.UpdateRequest, user: User): Seminar {
         val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
 
-        if (user.id != seminar.instructorProfile[0].user!!.id) throw NotChargeException("You are not charger")
+        if (!seminar.instructorProfile.contains(user.instructorProfile)) throw NotChargeException("You are not charger")
 
         if (updateRequest.count != null) seminar.count = updateRequest.count
 
@@ -105,9 +105,7 @@ class SeminarService(
             }
 
         } else {
-
             seminarRepository.findAllByOrderByCreatedAtDesc()
-
         }
 
     }
