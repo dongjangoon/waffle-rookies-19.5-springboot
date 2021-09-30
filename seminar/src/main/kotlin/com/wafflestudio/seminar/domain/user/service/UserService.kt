@@ -30,7 +30,7 @@ class UserService(
 
         return when (signupRequest.role) {
             Role.PARTICIPANT.role -> {
-                val participantProfile = ParticipantProfile(null, signupRequest.university, signupRequest.accepted)
+                val participantProfile = ParticipantProfile(null, signupRequest.university, signupRequest.accepted, mutableListOf())
                 userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.PARTICIPANT.role, participantProfile, null))
             }
             Role.INSTRUCTOR.role -> {
@@ -41,8 +41,8 @@ class UserService(
         }
     }
 
-    fun findByEmail(loginRequest: LoginRequest): User {
-        return userRepository.findByEmail(loginRequest.email)!!
+    fun findByEmail(email: String?): User? {
+        return userRepository.findByEmail(email) ?: throw UserNotFoundException("USER NOT FOUND")
     }
 
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {

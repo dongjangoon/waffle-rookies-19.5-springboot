@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
+@Table(name = "seminar_participant")
 class SeminarParticipant (
 
     @ManyToOne(fetch = FetchType.LAZY)
