@@ -3,10 +3,8 @@ package com.wafflestudio.seminar.global.auth
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.wafflestudio.seminar.domain.user.dto.UserDto
-import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.global.auth.dto.LoginRequest
 import com.wafflestudio.seminar.global.auth.model.UserPrincipalDetailService
 import org.springframework.security.authentication.AuthenticationManager
@@ -43,7 +41,7 @@ class SigninAuthenticationFilter(
         response.characterEncoding = "utf-8"
         val userEmail = authResult.name
         val user = userPrincipalDetailService.findUser(userEmail)
-        val mapper = ObjectMapper().registerKotlinModule()
+        val mapper = ObjectMapper().registerKotlinModule().registerModule(JavaTimeModule())
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         val responseBody = mapper.writeValueAsString(UserDto.Response(user))
         response.writer.write(responseBody)
@@ -54,7 +52,7 @@ class SigninAuthenticationFilter(
         response: HttpServletResponse,
         failed: AuthenticationException
     ) {
-        super.unsuccessfulAuthentication(request, response, failed);
+        super.unsuccessfulAuthentication(request, response, failed)
         response.status = HttpServletResponse.SC_UNAUTHORIZED
     }
 
