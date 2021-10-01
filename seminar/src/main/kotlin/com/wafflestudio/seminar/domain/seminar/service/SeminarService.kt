@@ -30,8 +30,9 @@ class SeminarService(
             else -> throw InvalidOnlineRequestException("Online should be 'true' or 'false'")
         }
 
-        user.instructorProfile?.seminar = seminar
-        seminar.instructorProfile.add(user.instructorProfile!!)
+        val findUser = userRepository.findByIdOrNull(user.id)
+        seminar.instructorProfile.add(findUser!!.instructorProfile!!)
+        findUser.instructorProfile?.seminar = seminar
 
         return seminarRepository.save(seminar)
     }
@@ -65,7 +66,6 @@ class SeminarService(
         return seminar
     }
 
-    // TODO: 2021-09-19 refactoring
     fun getSeminarsByQueryParams(allParams: Map<String, String>): List<Seminar> {
 
         return when {

@@ -34,10 +34,10 @@ class Seminar (
     /**
      * Seminar 가 없어지면 SeminarParticipant 도 같이 없어지도록 합니다.
      */
-    @OneToMany(cascade = [CascadeType.REMOVE], mappedBy = "seminar")
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "seminar")
     val seminarParticipants: MutableSet<SeminarParticipant> = mutableSetOf(),
 
-    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "seminar")
+    @OneToMany(mappedBy = "seminar")
     var instructorProfile: MutableSet<InstructorProfile> = mutableSetOf(),
 
     ) : BaseTimeEntity()
