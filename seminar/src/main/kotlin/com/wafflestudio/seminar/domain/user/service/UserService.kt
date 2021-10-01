@@ -30,8 +30,12 @@ class UserService(
 
         return when (signupRequest.role) {
             Role.PARTICIPANT.role -> {
-                val participantProfile = ParticipantProfile(null, signupRequest.university, signupRequest.accepted, mutableListOf())
-                userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.PARTICIPANT.role, participantProfile, null))
+                val participantProfile = ParticipantProfile(
+                    null, signupRequest.university, signupRequest.accepted, mutableListOf()
+                )
+                userRepository.save(User(
+                    signupRequest.name, signupRequest.email, encodedPassword, Role.PARTICIPANT.role, participantProfile, null
+                ))
             }
             Role.INSTRUCTOR.role -> {
                 val instructorProfile = InstructorProfile(null, signupRequest.company, signupRequest.year)

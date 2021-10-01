@@ -3,6 +3,7 @@ package com.wafflestudio.seminar.domain.seminar.dto
 import com.wafflestudio.seminar.domain.seminar.model.Seminar
 import com.wafflestudio.seminar.domain.user.dto.InstructorProfileDto
 import com.wafflestudio.seminar.domain.user.dto.ParticipantProfileDto
+import org.springframework.format.annotation.DateTimeFormat
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
@@ -83,7 +84,7 @@ class SeminarDto {
         val count: Int,
 
         @field:NotBlank
-        @field:Pattern(regexp = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$", message = "WRONG TIME FORMAT")
+        @field:DateTimeFormat(pattern = "HH:mm")
         val time: String,
         val online: String?,
     )
@@ -96,7 +97,7 @@ class SeminarDto {
         @field:Min(1, message = "INPUT POSITIVE INTEGER")
         val count: Int?,
 
-        @field:Pattern(regexp = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$", message = "WRONG TIME FORMAT")
+        @field:DateTimeFormat(pattern = "HH:mm")
         val time: String?,
         val online: String?,
     )
