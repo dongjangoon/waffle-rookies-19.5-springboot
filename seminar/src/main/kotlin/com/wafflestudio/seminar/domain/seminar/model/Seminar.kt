@@ -2,6 +2,7 @@ package com.wafflestudio.seminar.domain.seminar.model
 
 import com.wafflestudio.seminar.domain.model.BaseTimeEntity
 import com.wafflestudio.seminar.domain.user.model.InstructorProfile
+import org.springframework.format.annotation.DateTimeFormat
 import javax.persistence.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -24,7 +25,7 @@ class Seminar (
 
     @Column
     @field:NotBlank
-    @field:Pattern(regexp = "^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$")
+    @field:DateTimeFormat(pattern = "HH:mm")
     var time: String,
 
     @Column

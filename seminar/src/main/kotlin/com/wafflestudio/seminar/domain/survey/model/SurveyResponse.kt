@@ -12,12 +12,12 @@ import javax.validation.constraints.NotNull
 
 @Entity
 class SurveyResponse(
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "os_id", referencedColumnName = "id")
     @field:NotNull
     val os: OperatingSystem,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     val user: User?,
 
