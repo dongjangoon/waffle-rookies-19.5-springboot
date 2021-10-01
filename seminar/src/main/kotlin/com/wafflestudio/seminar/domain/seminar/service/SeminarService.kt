@@ -5,16 +5,11 @@ import com.wafflestudio.seminar.domain.seminar.exception.*
 import com.wafflestudio.seminar.domain.seminar.model.Seminar
 import com.wafflestudio.seminar.domain.seminar.model.SeminarParticipant
 import com.wafflestudio.seminar.domain.seminar.repository.SeminarRepository
-import com.wafflestudio.seminar.domain.user.dto.UserDto
-import com.wafflestudio.seminar.domain.user.exception.InvalidRoleRequestException
-import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.Role
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.domain.user.repository.UserRepository
-import com.wafflestudio.seminar.global.common.exception.InvalidRequestException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.transaction.Transactional
 
@@ -35,11 +30,8 @@ class SeminarService(
             else -> throw InvalidOnlineRequestException("Online should be 'true' or 'false'")
         }
 
-        // Dirty Checking 을 위해 User 다시 조회
-        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException("USER NOT FOUND")
-        findUser.instructorProfile?.seminar = seminar
-
-        seminar.instructorProfile.add(findUser.instructorProfile!!)
+        user.instructorProfile?.seminar = seminar
+        seminar.instructorProfile.add(user.instructorProfile!!)
 
         return seminarRepository.save(seminar)
     }
@@ -97,7 +89,6 @@ class SeminarService(
 
     fun enterSeminar(seminarId: Long, enterRequest: SeminarDto.EnterRequest, user: User): Seminar {
         val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
-        val findUser = userRepository.findByIdOrNull(user.id) ?: throw UserNotFoundException()
 
         val requestRole = enterRequest.role
         if (!user.roles.contains(requestRole)) throw NotRoleSuitableException("ROLE NOT SUITABLE")
@@ -114,16 +105,16 @@ class SeminarService(
                 user.participantProfile ?: throw NotRoleSuitableException("ROLE NOT SUITABLE")
                 if(!user.participantProfile!!.accepted) throw NotAcceptedException("CANNOT PARTICIPATE")
 
-                val seminarParticipant = SeminarParticipant(seminar, findUser.participantProfile!!)
+                val seminarParticipant = SeminarParticipant(seminar, user.participantProfile!!)
                 seminar.seminarParticipants.add(seminarParticipant)
-                findUser.participantProfile!!.seminars.add(seminarParticipant)
+                user.participantProfile!!.seminars.add(seminarParticipant)
             }
             Role.INSTRUCTOR.role -> {
                 user.instructorProfile ?: throw NotRoleSuitableException("ROLE NOT SUITABLE")
                 if(user.instructorProfile?.seminar != null) throw AlreadyChargeException("You're charged")
 
-                findUser.instructorProfile!!.seminar = seminar
-                seminar.instructorProfile.add(findUser.instructorProfile!!)
+                user.instructorProfile!!.seminar = seminar
+                seminar.instructorProfile.add(user.instructorProfile!!)
             }
         }
 
