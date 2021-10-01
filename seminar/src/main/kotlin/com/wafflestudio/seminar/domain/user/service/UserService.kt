@@ -4,15 +4,12 @@ import com.wafflestudio.seminar.domain.user.dto.UserDto
 import com.wafflestudio.seminar.domain.user.exception.AlreadyParticipatedException
 import com.wafflestudio.seminar.domain.user.exception.InvalidRoleRequestException
 import com.wafflestudio.seminar.domain.user.exception.UserAlreadyExistsException
-import com.wafflestudio.seminar.domain.user.exception.UserNotFoundException
 import com.wafflestudio.seminar.domain.user.model.InstructorProfile
 import com.wafflestudio.seminar.domain.user.model.ParticipantProfile
 import com.wafflestudio.seminar.domain.user.model.Role
 import com.wafflestudio.seminar.domain.user.model.User
 import com.wafflestudio.seminar.domain.user.repository.ParticipantProfileRepository
 import com.wafflestudio.seminar.domain.user.repository.UserRepository
-import com.wafflestudio.seminar.global.auth.dto.LoginRequest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -46,36 +43,34 @@ class UserService(
     }
 
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {
-        val findUser = userRepository.findById(user.id).orElseThrow() ?: throw UserNotFoundException()
 
-        when (findUser.roles) {
+        when (user.roles) {
             Role.PARTICIPANT.role -> {
-                findUser.participantProfile?.university = modifyRequest.university }
+                user.participantProfile?.university = modifyRequest.university }
             Role.INSTRUCTOR.role -> {
-                findUser.instructorProfile?.company = modifyRequest.company
-                findUser.instructorProfile?.year = modifyRequest.year
+                user.instructorProfile?.company = modifyRequest.company
+                user.instructorProfile?.year = modifyRequest.year
             }
             Role.BOTH.role -> {
-                findUser.participantProfile?.university = modifyRequest.university
-                findUser.instructorProfile?.company = modifyRequest.company
-                findUser.instructorProfile?.year = modifyRequest.year
+                user.participantProfile?.university = modifyRequest.university
+                user.instructorProfile?.company = modifyRequest.company
+                user.instructorProfile?.year = modifyRequest.year
             }
         }
 
-        return findUser
+        return user
     }
 
     fun participateLater(participantRequest: UserDto.ParticipantRequest, user: User): User {
         if (user.roles != Role.INSTRUCTOR.role) throw AlreadyParticipatedException("You're already participant")
 
-        val findUser = userRepository.findById(user.id).orElseThrow() ?: throw UserNotFoundException()
-        findUser.roles = Role.BOTH.role
+        user.roles = Role.BOTH.role
 
-        val participantProfile = ParticipantProfile(findUser, participantRequest.university, participantRequest.accepted)
+        val participantProfile = ParticipantProfile(user, participantRequest.university, participantRequest.accepted)
         participantProfileRepository.save(participantProfile)
-        findUser.participantProfile = participantProfile
+        user.participantProfile = participantProfile
 
-        return findUser
+        return user
     }
 
 }
