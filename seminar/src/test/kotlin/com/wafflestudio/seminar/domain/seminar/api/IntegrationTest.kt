@@ -1,10 +1,15 @@
 package com.wafflestudio.seminar.domain.seminar.api
 
+import com.wafflestudio.seminar.domain.seminar.dto.SeminarDto
+import com.wafflestudio.seminar.domain.seminar.model.Seminar
+import com.wafflestudio.seminar.domain.seminar.repository.SeminarRepository
+import com.wafflestudio.seminar.domain.seminar.service.SeminarService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestConstructor
 import org.springframework.test.web.servlet.MockMvc
@@ -13,22 +18,26 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import javax.transaction.Transactional
+import kotlin.properties.Delegates
 
 @AutoConfigureMockMvc
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
 internal class IntegrationTest(private val mockMvc: MockMvc) {
 
+    @SpyBean
+    private lateinit var seminarRepository: SeminarRepository
+
     private lateinit var authenticationParticipant: String
     private lateinit var authenticationInstructor: String
     private lateinit var authenticationInstructor2: String
+    private var seminarId: Long = 0
 
     //  participant 1명, instructor 2명, 세미나 1개를 등록해놓습니다.
     @BeforeEach
     fun `회원가입`() {
         authenticationParticipant = signupAsParticipantUser("waffle").andReturn()
             .response.getHeader("Authentication")!!
-
         authenticationInstructor = signupAsInstructorUser("hodduk").andReturn()
             .response.getHeader("Authentication")!!
         authenticationInstructor2 = signupAsInstructorUser("snack").andReturn()
@@ -42,13 +51,13 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
                     "time": "12:00"
                 }
                 """.trimIndent()
-
         mockMvc.post("/api/v1/seminars/") {
             content = (body)
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)
             header("Authentication", authenticationInstructor2)
         }
+        seminarId = seminarRepository.findByName("react").id
     }
 
     @Test
@@ -130,7 +139,7 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
                 }
             """.trimIndent()
 
-        mockMvc.put("/api/v1/seminars/1/") {
+        mockMvc.put("/api/v1/seminars/" + seminarId + "/") {
             content = (body)
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)
@@ -193,11 +202,11 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
     @Test
     @Transactional
     fun `세미나 중도 포기에 성공한다`() {
-        enterSeminarLaterAsParticipant(
+        enterSeminarLaterAsInstructor(
             """{"role": "participant"}""".trimIndent()
         )
 
-        mockMvc.delete("/api/v1/seminars/1/user/me/") {
+        mockMvc.delete("/api/v1/seminars/" + seminarId + "/user/me/") {
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)
             header("Authentication", authenticationParticipant)
@@ -209,7 +218,7 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
     @Test
     @Transactional
     fun `진행자가 세미나 중도 포기할 경우 실패한다`() {
-        mockMvc.delete("/api/v1/seminars/1/user/me/") {
+        mockMvc.delete("/api/v1/seminars/" + seminarId + "/user/me/") {
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)
             header("Authentication", authenticationInstructor2)
@@ -219,7 +228,7 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
     }
 
     private fun enterSeminarLaterAsParticipant(body: String): ResultActionsDsl {
-        return mockMvc.post("/api/v1/seminars/1/user/") {
+        return mockMvc.post("/api/v1/seminars/" + seminarId + "/user/") {
             content = (body)
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)
@@ -228,7 +237,7 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
     }
 
     private fun enterSeminarLaterAsInstructor(body: String): ResultActionsDsl {
-        return mockMvc.post("/api/v1/seminars/1/user/") {
+        return mockMvc.post("/api/v1/seminars/" + seminarId + "/user/") {
             content = (body)
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)
@@ -237,7 +246,7 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
     }
 
     private fun updateSeminarAsCharger(body: String): ResultActionsDsl {
-        return mockMvc.put("/api/v1/seminars/1/") {
+        return mockMvc.put("/api/v1/seminars/" + seminarId + "/") {
             content = (body)
             contentType = (MediaType.APPLICATION_JSON)
             accept = (MediaType.APPLICATION_JSON)

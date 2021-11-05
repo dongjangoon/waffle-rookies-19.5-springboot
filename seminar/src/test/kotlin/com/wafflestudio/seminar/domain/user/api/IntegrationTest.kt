@@ -1,24 +1,28 @@
 package com.wafflestudio.seminar.domain.user.api
 
+import com.wafflestudio.seminar.domain.user.repository.UserRepository
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestConstructor
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActionsDsl
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import javax.transaction.Transactional
 
 @AutoConfigureMockMvc
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
 internal class IntegrationTest(private val mockMvc: MockMvc) {
+
+    @SpyBean
+    private lateinit var userRepository: UserRepository
 
     // Authentication
     private lateinit var authenticationParticipant: String
@@ -87,28 +91,31 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
     @Test
     @Transactional
     fun `아이디로 회원 조회를 성공한다`() {
-        val uri = "/api/v1/users/1/"
+        val user = signupAsParticipantUser("bread")
+        val authentication = user.andReturn()
+            .response.getHeader("Authentication")!!
+        val userId = userRepository.findByEmail("bread@snu.ac.kr")?.id
+        val uri = "/api/v1/users/" + userId + "/"
 
-        mockMvc.perform(MockMvcRequestBuilders.get(uri).header("Authentication", authenticationParticipant))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.get(uri) {
+            header("Authentication", authentication)
+        }.andExpect { status { isOk() } }
     }
 
     @Test
     @Transactional
     fun `존재하지 않는 회원 조회에 실패한다`() {
-        val uri = "/api/v1/users/3/"
-
-        mockMvc.perform(MockMvcRequestBuilders.get(uri).header("Authentication", authenticationParticipant))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.get("/api/v1/users/3/") {
+            header("Authentication", authenticationInstructor)
+        }.andExpect { status { isNotFound() } }
     }
 
     @Test
     @Transactional
     fun `현재 로그인된 유저 조회에 성공한다`() {
-        val uri = "/api/v1/users/me/"
-
-        mockMvc.perform(MockMvcRequestBuilders.get(uri).header("Authentication", authenticationParticipant))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        mockMvc.get("/api/v1/users/me/") {
+            header("Authentication", authenticationInstructor)
+        }.andExpect { status { isOk() } }
     }
 
     @Test
@@ -144,11 +151,6 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
             """.trimIndent()
         ).andExpect {
             status{ isCreated() }
-            content { string(
-                Matchers.containsString(
-                    """"participantProfile":{"id":2,"university":"waffleUniversity","accepted":true,"seminars":[]""".trimIndent()
-                ))
-            }
         }
     }
 
@@ -167,6 +169,20 @@ internal class IntegrationTest(private val mockMvc: MockMvc) {
         }
     }
 
+    private fun login(name: String): ResultActionsDsl {
+        val body = """
+            {
+                "email": ${name}@snu.ac.kr,
+                "password": $name
+            }
+        """.trimIndent()
+
+        return mockMvc.post("/api/v1/users/signin/") {
+            content = (body)
+            contentType = (MediaType.APPLICATION_JSON)
+            accept = (MediaType.APPLICATION_JSON)
+        }
+    }
 
     private fun signupAsInstructorUser(name: String): ResultActionsDsl {
         val body =

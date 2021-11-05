@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SeminarRepository: JpaRepository<Seminar, Long> {
 
+    fun findByName(name: String): Seminar
+
     @EntityGraph(attributePaths = ["instructorProfile", "instructorProfile.user", "seminarParticipants", "seminarParticipants.participantProfile"])
     fun findByNameContainingOrderByCreatedAtDesc(name: String): List<Seminar>
 
