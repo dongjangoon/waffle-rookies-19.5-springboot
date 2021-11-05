@@ -22,13 +22,8 @@ class SurveyControllerAdvice() {
     fun notAllowed(e: WaffleException) =
         ResponseEntity(ErrorResponse(e.errorType.code, e.errorType.name, e.detail), HttpStatus.FORBIDDEN)
 
-    @ExceptionHandler(value = [RequestConflictException::class])
+    @ExceptionHandler(value = [ConflictException::class])
     fun conflict(e: WaffleException) =
         ResponseEntity(ErrorResponse(e.errorType.code, e.errorType.name, e.detail), HttpStatus.CONFLICT)
 
-    @ExceptionHandler(value = [Exception::class])
-    fun internalError(e: Exception) {
-        logger.debug("{}", e.toString())
-        ResponseEntity(ErrorResponse(-1, "서버 오류", ""), HttpStatus.INTERNAL_SERVER_ERROR)
-    }
 }
