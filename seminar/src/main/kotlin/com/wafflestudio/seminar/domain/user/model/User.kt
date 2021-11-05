@@ -34,5 +34,5 @@ class User(
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    val instructorProfile: InstructorProfile? = null,
+    var instructorProfile: InstructorProfile? = null,
 ) : BaseEntity()
