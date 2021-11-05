@@ -31,9 +31,8 @@ class DataLoader(
         operatingSystemRepository.save(linux)
 
         val classPathResource = ClassPathResource("data/example_surveyresult.tsv")
-        val inputStream = classPathResource.inputStream
 
-        BufferedReader(InputStreamReader(inputStream)).use { br ->
+        BufferedReader(InputStreamReader(classPathResource.inputStream)).use { br ->
             br.lines().forEach {
                 val rawSurveyResponse = it.split("\t")
                 val newSurveyResponse = SurveyResponse(
