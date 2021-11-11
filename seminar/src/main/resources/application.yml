@@ -26,7 +26,6 @@ spring:
       # create-drop: 시작 시 테이블 create, 종료 시 drop
     show-sql: true
 
-
 ---
 spring:
   config:
@@ -46,3 +45,4 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+

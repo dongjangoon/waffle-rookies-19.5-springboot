@@ -121,9 +121,9 @@ class SeminarService(
         return seminar
     }
 
-    fun giveUp(seminarId: Long, user: User): Seminar {
+    fun dropSeminar(seminarId: Long, user: User): Seminar {
         val seminar = seminarRepository.findByIdOrNull(seminarId) ?: throw SeminarNotFoundException("SEMINAR NOT FOUND")
-        if (seminar.instructorProfile.any { it.id == user.instructorProfile?.id }) throw InstructorGiveUpException("YOU ARE INSTRUCTOR")
+        if (seminar.instructorProfile.any { it.id == user.instructorProfile?.id }) throw InstructorGiveUpException("INSTRUCTOR CANNOT DROP")
 
         seminar.seminarParticipants.find {
             it.participantProfile.id == user.participantProfile?.id
