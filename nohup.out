@@ -1,0 +1,35 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.4)
+
+2021-11-14 16:50:02.943  INFO 4495 --- [           main] c.w.seminar.SeminarApplicationKt         : Starting SeminarApplicationKt using Java 11.0.12 on ip-172-31-6-30.ap-northeast-2.compute.internal with PID 4495 (/home/ec2-user/seminar-0.0.1-SNAPSHOT.jar started by ec2-user in /home/ec2-user/waffle-rookies-19.5-springboot)
+2021-11-14 16:50:02.950  INFO 4495 --- [           main] c.w.seminar.SeminarApplicationKt         : The following profiles are active: prod
+2021-11-14 16:50:06.615  INFO 4495 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-11-14 16:50:06.894  INFO 4495 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 268 ms. Found 6 JPA repository interfaces.
+2021-11-14 16:50:07.924  INFO 4495 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@71104a4' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-11-14 16:50:07.935  INFO 4495 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-11-14 16:50:08.840  INFO 4495 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-11-14 16:50:08.870  INFO 4495 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-11-14 16:50:08.871  INFO 4495 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.52]
+2021-11-14 16:50:09.033  INFO 4495 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-11-14 16:50:09.034  INFO 4495 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5899 ms
+2021-11-14 16:50:10.160  INFO 4495 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-11-14 16:50:10.323  INFO 4495 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-11-14 16:50:10.733  INFO 4495 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-11-14 16:50:11.041  INFO 4495 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-11-14 16:50:11.900  INFO 4495 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-11-14 16:50:11.992  INFO 4495 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2021-11-14 16:50:15.164  INFO 4495 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-11-14 16:50:15.178  INFO 4495 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-11-14 16:50:17.944  WARN 4495 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-11-14 16:50:18.487  INFO 4495 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@34c62fdf, org.springframework.security.web.context.SecurityContextPersistenceFilter@336f49a1, org.springframework.security.web.header.HeaderWriterFilter@4bc9ca97, org.springframework.security.web.authentication.logout.LogoutFilter@e3899fd, com.wafflestudio.seminar.global.auth.SigninAuthenticationFilter@3de79067, com.wafflestudio.seminar.global.auth.JwtAuthenticationFilter@1eb85a47, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4fb57fb3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@527937d0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@ca7e37f, org.springframework.security.web.session.SessionManagementFilter@340afaf8, org.springframework.security.web.access.ExceptionTranslationFilter@79ca7bea, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@935493d]
+2021-11-14 16:50:19.637  INFO 4495 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-11-14 16:50:19.661  INFO 4495 --- [           main] c.w.seminar.SeminarApplicationKt         : Started SeminarApplicationKt in 18.397 seconds (JVM running for 20.03)
+2021-11-14 16:50:23.771  INFO 4495 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-11-14 16:50:23.775  INFO 4495 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-11-14 16:50:23.777  INFO 4495 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
