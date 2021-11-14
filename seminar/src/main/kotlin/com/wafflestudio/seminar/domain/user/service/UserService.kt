@@ -23,23 +23,19 @@ class UserService(
 ) {
     fun signup(signupRequest: UserDto.SignupRequest): User {
         if (userRepository.existsByEmail(signupRequest.email)) throw UserAlreadyExistsException()
+        if (signupRequest.role != Role.INSTRUCTOR.role && signupRequest.role != Role.PARTICIPANT.role) throw InvalidRoleRequestException("role should be 'participant' or 'instructor'")
         val encodedPassword = passwordEncoder.encode(signupRequest.password)
 
-        return when (signupRequest.role) {
-            Role.PARTICIPANT.role -> {
-                val participantProfile = ParticipantProfile(
-                    null, signupRequest.university, signupRequest.accepted, mutableListOf()
-                )
-                userRepository.save(User(
-                    signupRequest.name, signupRequest.email, encodedPassword, Role.PARTICIPANT.role, participantProfile, null
-                ))
-            }
-            Role.INSTRUCTOR.role -> {
-                val instructorProfile = InstructorProfile(null, signupRequest.company, signupRequest.year)
-                userRepository.save(User(signupRequest.name, signupRequest.email, encodedPassword, Role.INSTRUCTOR.role, null, instructorProfile))
-            }
-            else -> throw InvalidRoleRequestException("role should be 'participant' or 'instructor'")
+        val participantProfile = signupRequest.run {
+            if (role == Role.PARTICIPANT.role) ParticipantProfile(null, university, accepted, mutableListOf()) else null
         }
+        val instructorProfile = signupRequest.run {
+            if (role == Role.INSTRUCTOR.role) InstructorProfile(null, company, year) else null
+        }
+
+        return userRepository.save(User(
+            signupRequest.name, signupRequest.email, encodedPassword, signupRequest.role, participantProfile, instructorProfile
+        ))
     }
 
     fun update(modifyRequest: UserDto.ModifyRequest, user: User): User {

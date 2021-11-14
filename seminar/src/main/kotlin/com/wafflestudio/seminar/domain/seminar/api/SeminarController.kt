@@ -65,9 +65,9 @@ class SeminarController(
     }
 
     @DeleteMapping("/{seminar_id}/user/me/")
-    fun giveUp(@PathVariable("seminar_id") seminarId: Long,
+    fun dropSeminar(@PathVariable("seminar_id") seminarId: Long,
                @CurrentUser user: User): SeminarDto.Response {
-        val seminar = seminarService.giveUp(seminarId, user)
+        val seminar = seminarService.dropSeminar(seminarId, user)
         return SeminarDto.Response(seminar)
     }
 }
